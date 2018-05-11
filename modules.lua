@@ -7,6 +7,7 @@ local moduleMenus = {}
 AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 	if not name or not cbdone or not cbclicked then
 		cbdone(nil)
+		return
 	end
 	name = trimTextLength(name)
 	
@@ -25,6 +26,7 @@ end)
 AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicked)
 	if not parent or not name or not cbdone or not cbclicked then
 		cbdone(nil)
+		return
 	end
 	name = trimTextLength(name)
 
@@ -48,6 +50,7 @@ end)
 AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclicked)
 	if not menu or not name or not cbdone or not cbclicked then
 		cbdone(nil)
+		return
 	end
 	name = trimTextLength(name)
 
