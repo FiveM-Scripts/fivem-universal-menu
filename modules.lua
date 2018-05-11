@@ -81,7 +81,7 @@ end)
 
 AddEventHandler("menu:blockInput", function(state, cb)
 	if cb and (state == false or state == true) then
-		blockInput = state
+		blockinput = state
 	end
 	cb()
 end)
