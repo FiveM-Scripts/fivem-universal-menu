@@ -17,7 +17,7 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 	})
 	
 	RegisterNUICallback(id, function(data, mcb)
-		cbclicked(id, name)
+		cbclicked(id)
 	end)
 	cbdone(id)
 end)
@@ -39,7 +39,7 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 		})
 		
 		RegisterNUICallback(id, function(data, mcb)
-			cbclicked(id, name)
+			cbclicked(id)
 		end)
 		cbdone(id)
 	end
@@ -64,11 +64,11 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		
 		if onoff == nil then
 			RegisterNUICallback(id, function(data, mcb)
-				cbclicked(id, name, nil)
+				cbclicked(id, nil)
 			end)
 		else
 			RegisterNUICallback(id, function(data, mcb)
-				cbclicked(id, name, data.datastate)
+				cbclicked(id, data.datastate)
 			end)
 		end
 		cbdone(id)
