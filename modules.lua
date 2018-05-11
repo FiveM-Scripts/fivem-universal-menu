@@ -1,27 +1,34 @@
 RegisterNetEvent("menu:registerModuleMenu")
 RegisterNetEvent("menu:addModuleSubMenu")
 RegisterNetEvent("menu:addModuleItem")
+
 local moduleMenus = {}
 
-AddEventHandler("menu:registerModuleMenu", function(name, cb)
-	if not name or not cb then
-		return
+AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
+	if not name or not cbdone or not cbclicked then
+		cbdone(nil)
 	end
+	name = trimTextLength(name)
 	
 	id = uuid()
 	table.insert(moduleMenus, {id = id, name = name, items = {}})
 	SendNUIMessage({
 		addModuleMenu = {id = id, name = name}
 	})
-	cb(id)
+	
+	RegisterNUICallback(id, function(data, mcb)
+		cbclicked(id, name)
+	end)
+	cbdone(id, name)
 end)
 
-AddEventHandler("menu:addModuleSubMenu", function(parent, name, cb)
-	if not parent or not name or not cb then
-		return
+AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicked)
+	if not parent or not name or not cbdone or not cbclicked then
+		cbdone(nil)
 	end
+	name = trimTextLength(name)
 
-	local moduleMenu = _getModuleMenu(parent)
+	local moduleMenu = getModuleMenu(parent)
 	if not moduleMenu then
 		cb(nil)
 	else
@@ -30,43 +37,63 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cb)
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
 		})
-		cb(id)
+		
+		RegisterNUICallback(id, function(data, mcb)
+			cbclicked(id, name)
+		end)
+		cbdone(id, name)
 	end
 end)
 
-AddEventHandler("menu:addModuleItem", function(menu, name, cbid, cbclick)
-	if not menu or not name or not cb then
-		return
+AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclicked)
+	if not menu or not name or not cbdone or not cbclicked then
+		cbdone(nil)
 	end
+	name = trimTextLength(name)
 
-	local moduleMenu = _getModuleMenu(parent)
+	local moduleMenu = getModuleMenu(menu)
 	if not moduleMenu then
-		cb(nil, nil)
+		cbdone(nil)
 	else
 		id = uuid()
 		cbname = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "action"})
 		SendNUIMessage({
-			addModuleItem = {menu = menu, id = id, name = name, cbname = cbname}
+			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
 		})
-		RegisterNUICallback(cbname, function(data, mcb)
-			cbclick(id)
-		end)
-		cbid(id)
+		
+		if onoff == nil then
+			RegisterNUICallback(id, function(data, mcb)
+				cbclicked(id, name, nil)
+			end)
+		else
+			RegisterNUICallback(id, function(data, mcb)
+				cbclicked(id, name, data.datastate)
+			end)
+		end
+		cbdone(id, name)
 	end
 end)
 
-function _getModuleMenu(id)
+function trimTextLength(text)
+	if string.len(text) > config.items.maxtextlength then
+		return string.sub(text, 1, config.items.maxtextlength)
+	else
+		return text
+	end
+end
+
+function getModuleMenu(id)
 	for _, moduleMenu in ipairs(moduleMenus) do
-		if moduleMenu.id == id or _getModuleSubMenu(moduleMenu, id) then
+		if moduleMenu.id == id or getModuleSubMenu(moduleMenu, id) then
 			return moduleMenu
 		end
 	end
 end
 
-function _getModuleSubMenu(parent, id)
+function getModuleSubMenu(parent, id)
 	for _, item in ipairs(parent.items) do
-		if item.id == id or (item.type == "menu" and _getModuleSubMenu(item, id)) then
+		if item.id == id or (item.type == "menu" and getModuleSubMenu(item, id)) then
 			return item
 		end
 	end

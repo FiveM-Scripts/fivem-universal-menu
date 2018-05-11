@@ -72,7 +72,7 @@ function addModuleMenu(parentmenu, menu) {
 	menu.items[0].push({item: "<p class='menuoption'>It's empty in here!</p>"});
 	menus[menu.id] = menu;
 	
-	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id});
+	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id, name = menu.name});
 }
 
 function addModuleItem(menu, item) {
@@ -81,14 +81,10 @@ function addModuleItem(menu, item) {
 		menu.hasContent = true;
 	}
 	
-	menu.menu = "<div id='" + menu.id + "'></div>";
-	menu.parent = menu.id;
-	menu.items = [[]];
-	menu.items[0].push({item: "<p class='menuoption'>It's empty in here!</p>"});
-	menus[menu.id] = menu;
-	debug(menu.menu);
-	
-	getEmptyItemSlotPage(menu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id});
+	var data = {item: "<p class='menuoption'>" + item.name + "</p>", itemid: item.id, name = item.name};
+	if (item.onoff != null)
+		data.datastate = item.onoff;
+	getEmptyItemSlotPage(menu).push(data);
 }
 
 function getEmptyItemSlotPage(menu) {
@@ -102,34 +98,6 @@ function getEmptyItemSlotPage(menu) {
 		page++;
 	}
 }
-
-/*function init() {
-    $("div").each(function(i, obj) {
-        if ($(this).attr("id") == "menu$container")
-			return;
-		
-		var data = {};
-		data.menu = $(this).detach();
-		
-		data.items = [];
-		$(this).children().each(function(i, obj) {
-			// send true state if it exists
-			if ($(this).data("state") == "ON") {
-				var statedata = $(this).data("action").split(" ");
-				sendData(statedata[0], {action: statedata[1], newstate: true});
-			}
-			
-			var page = Math.floor(i / 7);
-			if (data.items[page] == null)
-				data.items[page] = [];
-			
-			data.items[page].push($(this).detach());
-			data.maxitems = page;
-		});
-		
-		menus[$(this).attr("id")] = data;
-    });
-}*/
 
 function menuItemScroll(dir) {
     $(".menuoption").eq(itemcounter + 1).attr("class", "menuoption");
@@ -188,25 +156,18 @@ function menuBack() {
 function handleSelectedOption() {
     var item = content.items[currentpage][itemcounter];
     
-    if (item.subid != null)
+    if (item.subid != null) {
         showMenu(menus[item.subid]);
-    /*else if (item.data("action")) {
-        var newstate = true;
-        if (item.data("state")) {
-            // .attr() because .data() gives original values
-            if (item.attr("data-state") == "ON") {
-                newstate = false;
-                item.attr("data-state", "OFF");
-            } else if (item.attr("data-state") == "OFF")
-                item.attr("data-state", "ON");
-        }
-        
-        var data = item.data("action").split(" ");
-        if (data[1] == "*")
-            data[1] = item.parent().attr("data-subdata");
-        
-        sendData(data[0], {action: data[1], newstate: newstate});
-    }*/
+		sendData(item.subid, {});
+    } else if (item.itemid != null) {
+		var data = {};
+		if (item.datastate != null) {
+			item.datastate = !item.datastate;
+			data.datastate = item.datastate;
+			updateItemDataStateText($(".menuoption").eq(itemcounter + 1), data.datastate);
+		}
+		sendData(item.itemid, data);
+	}
     
     playSound("SELECT");
 }
@@ -232,18 +193,31 @@ function showMenu(menu) {
     showPage(0);
 }
 
+function updateItemDataStateText($item, state) {
+	var datastateText = "OFF";
+	if (state)
+		datastateText = "ON";
+	$item.attr("data-state", datastateText);
+}
+
 function showPage(page) {
-	var $menu = $("#" + content.id);
+	var $content = $("#" + content.id);
 	
     if (currentpage != null)
-        $menu.empty();
+        $content.empty();
     
     currentpage = page;
     
-    for (var i = 0; i < content.items[currentpage].length; i++)
-        $menu.append(content.items[currentpage][i].item);
+    for (var i = 0; i < content.items[currentpage].length; i++) {
+		var item = content.items[currentpage][i];
+		var $item = $(item.item);
+		
+		if (item.datastate != null)
+			updateItemDataStateText($item, item.datastate);
+		$content.append($item);
+	}
     
-	$menu.append(pageindicator);
+	$content.append(pageindicator);
     
     if (content.items.length - 1 > 0)
         $("#pageindicator").text("Page " + (currentpage + 1) + " / " + (content.items.length));

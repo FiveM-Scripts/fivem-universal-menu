@@ -1,19 +1,9 @@
-local controls = {
-	{control = 167, action = "toggle", alwayslisten = true},
-	{control = 172, action = "up"},
-	{control = 173, action = "down"},
-	{control = 174, action = "left"},
-	{control = 175, action = "right"},
-	{control = 176, action = "enter"},
-	{control = 177, action = "back"}
-}
-
 Citizen.CreateThread(function()
 	while true do
 		Wait(1)
 		
 		if not blockinput then
-			for _, data in ipairs(controls) do
+			for _, data in ipairs(config.controls) do
 				if menuopen or data.alwayslisten then
 					if IsControlJustPressed(1, data.control) then
 						data.scrollcooldown = config.scrolling.cooldown
@@ -45,24 +35,6 @@ end)
 RegisterNUICallback("print", function(data, cb)
 	print(data.msg)
 end)
-
-function drawNotification(text)
-	SetNotificationTextEntry("STRING")
-	AddTextComponentString(text)
-	DrawNotification(false, false)
-end
-
-function stringsplit(inputstr, sep)
-    if sep == nil then
-            sep = "%s"
-    end
-    local t={} ; i=1
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-            t[i] = str
-            i = i + 1
-    end
-    return t
-end
 
 function send(data)
 	if data == "toggle" then
