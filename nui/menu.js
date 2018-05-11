@@ -72,7 +72,7 @@ function addModuleMenu(parentmenu, menu) {
 	menu.items[0].push({item: "<p class='menuoption'>It's empty in here!</p>"});
 	menus[menu.id] = menu;
 	
-	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id, name = menu.name});
+	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id, name: menu.name});
 }
 
 function addModuleItem(menu, item) {
@@ -81,7 +81,7 @@ function addModuleItem(menu, item) {
 		menu.hasContent = true;
 	}
 	
-	var data = {item: "<p class='menuoption'>" + item.name + "</p>", itemid: item.id, name = item.name};
+	var data = {item: "<p class='menuoption'>" + item.name + "</p>", itemid: item.id, name: item.name};
 	if (item.onoff != null)
 		data.datastate = item.onoff;
 	getEmptyItemSlotPage(menu).push(data);
