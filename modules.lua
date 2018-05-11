@@ -1,6 +1,7 @@
 RegisterNetEvent("menu:registerModuleMenu")
 RegisterNetEvent("menu:addModuleSubMenu")
 RegisterNetEvent("menu:addModuleItem")
+RegisterNetEvent("menu:blockInput")
 
 local moduleMenus = {}
 
@@ -65,7 +66,7 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
 		})
 		
-		if onoff == nil then
+		if onoff ~= false and onoff ~= true then
 			RegisterNUICallback(id, function(data, mcb)
 				cbclicked(id, nil)
 			end)
@@ -76,6 +77,13 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		end
 		cbdone(id)
 	end
+end)
+
+AddEventHandler("menu:blockInput", function(state, cb)
+	if cb and (state == false or state == true) then
+		blockInput = state
+	end
+	cb()
 end)
 
 function trimTextLength(text)
