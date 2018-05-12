@@ -6,8 +6,10 @@ RegisterNetEvent("menu:blockInput")
 local moduleMenus = {}
 
 AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
-	if not name or not cbdone or not cbclicked then
-		cbdone(nil)
+	if not name then
+		if cbdone then
+			cbdone(nil)
+		end
 		return
 	end
 	name = trimTextLength(name)
@@ -18,22 +20,31 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 		addModuleMenu = {id = id, name = name}
 	})
 	
-	RegisterNUICallback(id, function(data, mcb)
-		cbclicked(id)
-	end)
-	cbdone(id)
+	if cbclicked then
+		RegisterNUICallback(id, function(data, mcb)
+			cbclicked(id)
+		end)
+	end
+	
+	if cbdone then
+		cbdone(id)
+	end
 end)
 
 AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicked)
-	if not parent or not name or not cbdone or not cbclicked then
-		cbdone(nil)
+	if not parent or not name then
+		if cbdone then
+			cbdone(nil)
+		end
 		return
 	end
 	name = trimTextLength(name)
 
 	local moduleMenu = getModuleMenu(parent)
 	if not moduleMenu then
-		cb(nil)
+		if cbdone then
+			cbdone(nil)
+		end
 	else
 		id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "menu", items = {}})
@@ -41,23 +52,32 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 			addModuleSubMenu = {parent = parent, id = id, name = name}
 		})
 		
-		RegisterNUICallback(id, function(data, mcb)
-			cbclicked(id)
-		end)
-		cbdone(id)
+		if cbclicked then
+			RegisterNUICallback(id, function(data, mcb)
+				cbclicked(id)
+			end)
+		end
+		
+		if cbdone then
+			cbdone(id)
+		end
 	end
 end)
 
 AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclicked)
-	if not menu or not name or not cbdone or not cbclicked then
-		cbdone(nil)
+	if not menu or not name then
+		if cbdone then
+			cbdone(nil)
+		end
 		return
 	end
 	name = trimTextLength(name)
 
 	local moduleMenu = getModuleMenu(menu)
 	if not moduleMenu then
-		cbdone(nil)
+		if cbdone then
+			cbdone(nil)
+		end
 	else
 		id = uuid()
 		cbname = uuid()
@@ -66,16 +86,21 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
 		})
 		
-		if onoff ~= false and onoff ~= true then
-			RegisterNUICallback(id, function(data, mcb)
-				cbclicked(id, nil)
-			end)
-		else
-			RegisterNUICallback(id, function(data, mcb)
-				cbclicked(id, data.datastate)
-			end)
+		if cbclicked then
+			if onoff ~= false and onoff ~= true then
+				RegisterNUICallback(id, function(data, mcb)
+					cbclicked(id, nil)
+				end)
+			else
+				RegisterNUICallback(id, function(data, mcb)
+					cbclicked(id, data.datastate)
+				end)
+			end
 		end
-		cbdone(id)
+		
+		if cbdone then
+			cbdone(id)
+		end
 	end
 end)
 
