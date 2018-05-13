@@ -13,9 +13,13 @@ function handleConfig(config) {
 
 function setTitleColorFromConfig(config) {
 	var color = config.menu.title.color;
-	var from = color.from;
-	var to = color.to;
-	$(".menuoption.menutitle").css("background",
-		"linear-gradient(90deg, rgba(" + from.r + "," + from.g + "," + from.b + "," + from.a + ")" + 
-		", rgba(" + to.r + "," + to.g + "," + to.b + "," + to.a + ")");
+	if (color.css)
+		$(".menuoption.menutitle").css("background", color.css);
+	else {
+		var from = color.from;
+		var to = color.to;
+		$(".menuoption.menutitle").css("background",
+			"linear-gradient(90deg, rgba(" + from.r + "," + from.g + "," + from.b + "," + from.a + ")" + 
+			", rgba(" + to.r + "," + to.g + "," + to.b + "," + to.a + ")");
+	}
 }

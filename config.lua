@@ -24,7 +24,9 @@ config = {
 					g = 87, -- Green
 					b = 155, -- Blue
 					a = 0.8 -- Alpha
-				}
+				},
+				
+				css = nil -- Advanced users only, replace nil with css background attribute
 			}
 		}
 	},
