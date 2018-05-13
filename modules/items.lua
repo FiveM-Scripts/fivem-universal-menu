@@ -17,7 +17,7 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 	name = trimTextLength(name)
 	
 	id = uuid()
-	table.insert(moduleMenus, {id = id, name = name, items = {}})
+	table.insert(moduleMenus, {id = id, name = name, type = "menu", items = {}})
 	SendNUIMessage({
 		addModuleMenu = {id = id, name = name}
 	})
@@ -47,7 +47,7 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 			cbdone(nil)
 		end
 	else
-		local moduleMenu = getByID(parent)
+		local moduleMenu = getByID(moduleMenus, parent)
 		id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "menu", items = {}})
 		SendNUIMessage({
@@ -80,7 +80,7 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 			cbdone(nil)
 		end
 	else
-		local moduleMenu = getByID(menu)
+		local moduleMenu = getByID(moduleMenus, menu)
 		id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "action"})
 		SendNUIMessage({
@@ -140,14 +140,14 @@ end
 
 function getByID(items, id)
 	for _, item in ipairs(items) do
-		if item.id == id or (item.type == "menu" and getItemByID(item.items, id)) then
+		if item.id == id or (item.type == "menu" and getByID(item.items, id)) then
 			return item
 		end
 	end
 end
 
 function isIDRegistered(id)
-	return getItemByID(moduleMenus, id) ~= nil
+	return getByID(moduleMenus, id) ~= nil
 end
 
 math.randomseed(GetGameTimer())
