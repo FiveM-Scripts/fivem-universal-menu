@@ -2,6 +2,8 @@ RegisterNetEvent("menu:registerModuleMenu")
 RegisterNetEvent("menu:addModuleSubMenu")
 RegisterNetEvent("menu:addModuleItem")
 RegisterNetEvent("menu:blockInput")
+RegisterNetEvent("menu:isIDRegistered")
+RegisterNetEvent("menu:hideMenu")
 
 local moduleMenus = {}
 
@@ -14,7 +16,7 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 	end
 	name = trimTextLength(name)
 	
-	id = uuid()
+	local id = uuid()
 	table.insert(moduleMenus, {id = id, name = name, items = {}})
 	SendNUIMessage({
 		addModuleMenu = {id = id, name = name}
@@ -40,13 +42,13 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 	end
 	name = trimTextLength(name)
 
-	local moduleMenu = getModuleMenu(parent)
-	if not moduleMenu then
+	if not isIDRegistered(parent) then
 		if cbdone then
 			cbdone(nil)
 		end
 	else
-		id = uuid()
+		local moduleMenu = getByID(parent)
+		local id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "menu", items = {}})
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
@@ -73,13 +75,13 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 	end
 	name = trimTextLength(name)
 
-	local moduleMenu = getModuleMenu(menu)
-	if not moduleMenu then
+	if not isIDRegistered(menu) then
 		if cbdone then
 			cbdone(nil)
 		end
 	else
-		id = uuid()
+		local moduleMenu = getByID(menu)
+		local id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "action"})
 		SendNUIMessage({
 			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
@@ -103,11 +105,29 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 	end
 end)
 
-AddEventHandler("menu:blockInput", function(state, cb)
-	if cb and (state == false or state == true) then
+AddEventHandler("menu:blockInput", function(state)
+	if state == false or state == true then
 		blockinput = state
 	end
-	cb()
+end)
+
+AddEventHandler("menu:isIDRegistered", function(id, cb)
+	local result = false
+	if id then
+		result = isIDRegistered(id)
+	end
+	
+	if cb then
+		cb(result)
+	end
+end)
+
+AddEventHandler("menu:hideMenu", function()
+	if menuopen then
+		SendNUIMessage({
+			hidemenu = true
+		})
+	end
 end)
 
 function trimTextLength(text)
@@ -118,20 +138,16 @@ function trimTextLength(text)
 	end
 end
 
-function getModuleMenu(id)
-	for _, moduleMenu in ipairs(moduleMenus) do
-		if moduleMenu.id == id or getModuleSubMenu(moduleMenu, id) then
-			return moduleMenu
+function getByID(items, id)
+	for _, item in ipairs(items) do
+		if item.id == id or (item.type == "menu" and getItemByID(item.items, id)) then
+			return item
 		end
 	end
 end
 
-function getModuleSubMenu(parent, id)
-	for _, item in ipairs(parent.items) do
-		if item.id == id or (item.type == "menu" and getModuleSubMenu(item, id)) then
-			return item
-		end
-	end
+function isIDRegistered(id)
+	return getItemByID(moduleMenus, id) ~= nil
 end
 
 math.randomseed(GetGameTimer())

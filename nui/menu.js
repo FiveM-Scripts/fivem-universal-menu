@@ -21,8 +21,10 @@ $(function() {
             $container.show();
             playSound("YES");
         } else if (data.hidemenu) {
-            $container.hide();
-            playSound("NO");
+			if ($container.is(":visible")) {
+				$container.hide();
+				playSound("NO");
+			}
         }
         
         else if (data.menuenter)
