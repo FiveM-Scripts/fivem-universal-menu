@@ -47,9 +47,11 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 			cbdone(nil)
 		end
 	else
-		local moduleMenu = getByID(moduleMenus, parent)
 		id = uuid()
+		
+		local moduleMenu = getByID(moduleMenus, parent)
 		table.insert(moduleMenu.items, {id = id, name = name, type = "menu", items = {}})
+		
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
 		})
@@ -67,22 +69,28 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 end)
 
 AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclicked)
-	if not menu or not name then
+	if not name then
 		if cbdone then
 			cbdone(nil)
 		end
 		return
 	end
 	name = trimTextLength(name)
-
-	if not isIDRegistered(menu) then
+	if menu and not isIDRegistered(menu) then
 		if cbdone then
 			cbdone(nil)
 		end
 	else
-		local moduleMenu = getByID(moduleMenus, menu)
 		id = uuid()
-		table.insert(moduleMenu.items, {id = id, name = name, type = "action"})
+		
+		local data = {id = id, name = name, type = "action"}
+		if not menu then
+			table.insert(moduleMenus, data)
+		else
+			local moduleMenu = getByID(moduleMenus, menu)
+			table.insert(moduleMenu.items, data)
+		end
+			
 		SendNUIMessage({
 			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
 		})

@@ -46,8 +46,12 @@ $(function() {
 			addModuleMenu(mainmenu, data.addModuleMenu);
 		else if (data.addModuleSubMenu)
 			addModuleMenu(menus[data.addModuleSubMenu.parent], data.addModuleSubMenu);
-		else if (data.addModuleItem)
-			addModuleItem(menus[data.addModuleItem.menu], data.addModuleItem);
+		else if (data.addModuleItem) {
+			if (!data.addModuleItem.menu)
+				addModuleItem(mainmenu, data.addModuleItem);
+			else
+				addModuleItem(menus[data.addModuleItem.menu], data.addModuleItem);
+		}
     });
 });
 
