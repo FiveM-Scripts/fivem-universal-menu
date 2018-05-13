@@ -11,7 +11,7 @@ config = {
 	
 	menu = {
 		title = {
-			color = {
+			color = { -- (Left to Right)
 				from = {
 					r = 2, -- Red
 					g = 136, -- Green
