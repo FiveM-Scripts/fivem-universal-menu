@@ -16,7 +16,7 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 	end
 	name = trimTextLength(name)
 	
-	local id = uuid()
+	id = uuid()
 	table.insert(moduleMenus, {id = id, name = name, items = {}})
 	SendNUIMessage({
 		addModuleMenu = {id = id, name = name}
@@ -48,7 +48,7 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 		end
 	else
 		local moduleMenu = getByID(parent)
-		local id = uuid()
+		id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "menu", items = {}})
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
@@ -81,7 +81,7 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		end
 	else
 		local moduleMenu = getByID(menu)
-		local id = uuid()
+		id = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "action"})
 		SendNUIMessage({
 			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
@@ -112,7 +112,7 @@ AddEventHandler("menu:blockInput", function(state)
 end)
 
 AddEventHandler("menu:isIDRegistered", function(id, cb)
-	local result = false
+	result = false
 	if id then
 		result = isIDRegistered(id)
 	end
