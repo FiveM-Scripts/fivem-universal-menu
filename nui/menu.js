@@ -14,38 +14,38 @@ $(function() {
     init();
     
     window.addEventListener("message", function(event) {
-        var item = event.data;
+        var data = event.data;
         
-        if (item.showmenu) {
+        if (data.showmenu) {
             showMenu(mainmenu);
             $container.show();
             playSound("YES");
-        } else if (item.hidemenu) {
+        } else if (data.hidemenu) {
             $container.hide();
             playSound("NO");
         }
         
-        else if (item.menuenter)
+        else if (data.menuenter)
             handleSelectedOption();
-        else if (item.menuback)
+        else if (data.menuback)
             menuBack();
         
-        else if (item.menuup)
+        else if (data.menuup)
             menuItemScroll("up");
-        else if (item.menudown)
+        else if (data.menudown)
             menuItemScroll("down");
         
-        else if (item.menuleft)
+        else if (data.menuleft)
             menuPageScroll("left");
-        else if (item.menuright)
+        else if (data.menuright)
             menuPageScroll("right");
 		
-		else if (item.addModuleMenu)
-			addModuleMenu(mainmenu, item.addModuleMenu);
-		else if (item.addModuleSubMenu)
-			addModuleMenu(menus[item.addModuleSubMenu.parent], item.addModuleSubMenu);
-		else if (item.addModuleItem)
-			addModuleItem(menus[item.addModuleItem.menu], item.addModuleItem);
+		else if (data.addModuleMenu)
+			addModuleMenu(mainmenu, data.addModuleMenu);
+		else if (data.addModuleSubMenu)
+			addModuleMenu(menus[data.addModuleSubMenu.parent], data.addModuleSubMenu);
+		else if (data.addModuleItem)
+			addModuleItem(menus[data.addModuleItem.menu], data.addModuleItem);
     });
 });
 

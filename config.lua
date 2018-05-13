@@ -9,6 +9,26 @@ config = {
 		{control = 177, action = "back"} -- Back
 	},
 	
+	menu = {
+		title = {
+			color = {
+				from = {
+					r = 2, -- Red
+					g = 136, -- Green
+					b = 209, -- Blue
+					a = 0.9 -- Alpha
+				},
+				
+				to = {
+					r = 1, -- Red
+					g = 87, -- Green
+					b = 155, -- Blue
+					a = 0.8 -- Alpha
+				}
+			}
+		}
+	},
+	
 	scrolling = {
 		cooldown = 25, -- Time after holding an arrow key to start continous scrolling
 		continouscooldown = 5 -- Time between scrolls in continous scrolling mode

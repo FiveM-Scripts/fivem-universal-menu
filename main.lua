@@ -1,4 +1,8 @@
 Citizen.CreateThread(function()
+	SendNUIMessage({
+		config = {menu = config.menu}
+	})
+
 	while true do
 		Wait(1)
 		

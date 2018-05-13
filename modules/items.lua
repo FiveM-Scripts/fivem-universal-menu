@@ -80,7 +80,6 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		end
 	else
 		id = uuid()
-		cbname = uuid()
 		table.insert(moduleMenu.items, {id = id, name = name, type = "action"})
 		SendNUIMessage({
 			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}

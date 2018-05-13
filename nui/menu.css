@@ -26,19 +26,6 @@ p {
     padding-left: 5px;
 }
 
-.menuoption.menutitle {
-    justify-content: center;
-    font-size: 25px;
-    height: 80px;
-    background: linear-gradient(90deg, rgba(2, 136, 209, 0.9), rgba(1, 87, 155, 0.8));
-    text-shadow: 0 0 10px rgb(2, 119, 189);
-}
-
-.menuoption.menutitle:after {
-    margin-left: 0;
-    margin-right: 0;
-}
-
 .menuoption:after {
     content: attr(data-state);
     margin-left: auto;
@@ -47,6 +34,18 @@ p {
 
 .menuoption.selected {
     background: linear-gradient(90deg, rgba(176, 190, 197, 1.0), rgba(144, 164, 174, 0.9));
+}
+
+.menuoption.menutitle {
+    justify-content: center;
+    font-size: 25px;
+    height: 80px;
+    background: linear-gradient(90deg, rgba(2, 136, 209, 0.9), rgba(1, 87, 155, 0.8));
+}
+
+.menuoption.menutitle:after {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 #pageindicator {
