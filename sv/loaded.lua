@@ -1,1 +1,1 @@
-print("Universal Menu v" .. resource_versionString .. " loaded!")
+RconPrint("Universal Menu v" .. GetResourceMetadata(GetCurrentResourceName(), "resource_version", 0) .. " loaded!\n")

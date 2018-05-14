@@ -11,7 +11,7 @@ end)
 
 AddEventHandler("menu:getVersion", function(cb)
 	if cb then
-		cb(resource_versionString)
+		cb(GetResourceMetadata(GetCurrentResourceName(), "resource_version", 0))
 	end
 end)
 

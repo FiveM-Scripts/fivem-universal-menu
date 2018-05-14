@@ -1,7 +1,8 @@
--- controls: https://wiki.fivem.net/wiki/Controls
+-- Controls: https://wiki.fivem.net/wiki/Controls
+
 config = {
 	controls = {
-		{control = 167, action = "toggle", alwayslisten = true}, -- Open/Close Menu (F6)
+		{control = 167, action = "toggle", alwayslisten = true}, -- Open/Close Menu (F6 by default)
 		{control = 172, action = "up"}, -- Up
 		{control = 173, action = "down"}, -- Down
 		{control = 174, action = "left"}, -- Previous Page
