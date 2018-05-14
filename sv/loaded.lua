@@ -1,0 +1,1 @@
+print("Universal Menu v" .. resource_versionString .. " loaded!")

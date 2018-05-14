@@ -1,9 +1,7 @@
 RegisterNetEvent("menu:registerModuleMenu")
 RegisterNetEvent("menu:addModuleSubMenu")
 RegisterNetEvent("menu:addModuleItem")
-RegisterNetEvent("menu:blockInput")
 RegisterNetEvent("menu:isIDRegistered")
-RegisterNetEvent("menu:hideMenu")
 
 local moduleMenus = {}
 
@@ -113,12 +111,6 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 	end
 end)
 
-AddEventHandler("menu:blockInput", function(state)
-	if state == false or state == true then
-		blockinput = state
-	end
-end)
-
 AddEventHandler("menu:isIDRegistered", function(id, cb)
 	result = false
 	if id then
@@ -127,14 +119,6 @@ AddEventHandler("menu:isIDRegistered", function(id, cb)
 	
 	if cb then
 		cb(result)
-	end
-end)
-
-AddEventHandler("menu:hideMenu", function()
-	if menuopen then
-		SendNUIMessage({
-			hidemenu = true
-		})
 	end
 end)
 
