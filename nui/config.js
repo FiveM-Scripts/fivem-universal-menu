@@ -15,7 +15,7 @@ function handleConfig(config) {
 }
 
 function setTitleTextFromConfig(config) {
-	$("#title").text(config.title.text);
+	menus["mainmenu"].name = config.title.text;
 }
 
 function setTitleColorFromConfig(config) {

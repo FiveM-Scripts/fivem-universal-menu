@@ -58,7 +58,7 @@ $(function() {
 function init() {
 	$container = $("#menucontainer");
 	$title = $("#title");
-	mainmenu = {id: "mainmenu", name: "Something went wrong", menu: $("#mainmenu").remove(), items: [[]]};
+	mainmenu = {id: "mainmenu", name: "Universal Menu", menu: $("#mainmenu").remove(), items: [[]]};
 	menus["mainmenu"] = mainmenu;
 	
 	mainmenu.menu.children().each(function(i, obj) {
@@ -194,8 +194,7 @@ function showMenu(menu) {
     
     content = menu;
     $container.append(content.menu);
-	if (content.id != "mainmenu")
-		$title.text(content.name);
+	$title.text(content.name);
     
     showPage(0);
 }
