@@ -1,4 +1,14 @@
--- Controls: https://wiki.fivem.net/wiki/Controls
+--[[
+	-- Controls --
+	https://wiki.fivem.net/wiki/Controls
+	
+	-- Colors --
+	r: Red (0 - 255)
+	g: Green (0 - 255)
+	b: Blue (0 - 255)
+	a: Alpha (0.0 - 1.0)
+	From Left to Right
+]]--
 
 config = {
 	controls = {
@@ -11,24 +21,21 @@ config = {
 		{control = 177, action = "back"} -- Back
 	},
 	
-	menu = {
-		title = {
-			color = { -- (Left to Right)
-				from = {
-					r = 2, -- Red
-					g = 136, -- Green
-					b = 209, -- Blue
-					a = 0.9 -- Alpha
-				},
-				
-				to = {
-					r = 1, -- Red
-					g = 87, -- Green
-					b = 155, -- Blue
-					a = 0.8 -- Alpha
-				},
-				
-				css = nil -- Advanced users only, replace nil with css background attribute
+	title = {
+		text = "Universal Menu", -- Header Default Text
+		color = {
+			from = {
+				r = 2,
+				g = 136,
+				b = 209,
+				a = 0.9
+			},
+			
+			to = {
+				r = 1,
+				g = 87,
+				b = 155,
+				a = 0.8
 			}
 		}
 	},
@@ -39,6 +46,6 @@ config = {
 	},
 	
 	items = {
-		maxtextlength = 25 -- Maximum length a text can be
+		maxtextlength = 25, -- Maximum length a text can be
 	}
 }

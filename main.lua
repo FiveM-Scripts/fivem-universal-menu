@@ -27,7 +27,7 @@ end)
 AddEventHandler("playerSpawned", function(spawn)
 	if not alreadySpawned then
 		SendNUIMessage({
-			config = {menu = config.menu}
+			config = {data = config}
 		})
 		alreadySpawned = true
 	end
