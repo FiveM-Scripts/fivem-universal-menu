@@ -47,5 +47,6 @@ config = {
 	
 	items = {
 		maxtextlength = 25, -- Maximum length a text can be
+		pagelimit = 10 -- Max amount of items on one page (before auto-paging kicks in)
 	}
 }

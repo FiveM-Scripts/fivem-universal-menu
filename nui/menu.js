@@ -1,5 +1,6 @@
 var itemcounter;
 var currentpage;
+var pagelimit = 10;
 
 var $container;
 var $title;
@@ -99,7 +100,7 @@ function getEmptyItemSlotPage(menu) {
 		if (menu.items[page] == null) {
 			menu.items[page] = [];
 			return menu.items[page];
-		} else if (menu.items[page].length < 10)
+		} else if (menu.items[page].length < pagelimit)
 			return menu.items[page];
 		page++;
 	}
