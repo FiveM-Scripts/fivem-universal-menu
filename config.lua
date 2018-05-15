@@ -74,7 +74,8 @@ config = {
 	},
 	
 	items = {
-		maxtextlength = 25, -- Maximum length a text can be
-		pagelimit = 10 -- Max amount of items on one page (before auto-paging kicks in)
+		maxnamelength = 25, -- Maximum length a name can be
+		pagelimit = 10, -- Max amount of items on one page (before auto-paging kicks in)
+		maxdesclength = 125 -- Maximum length a description can be
 	}
 }

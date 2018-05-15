@@ -60,8 +60,20 @@ p {
     margin-right: 0;
 }
 
-#pageindicator {
+.menuoption.itemdesc {
     font-size: 20px;
+    height: 105px;
+    background: linear-gradient(90deg, rgba(33, 33, 33, 0.8), rgba(0, 0, 0, 0.7));
+	display: none;
+}
+
+.menuoption.itemdesc:after {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#pageindicator {
+    font-size: 15px;
     text-align: center;
-    color: white;
+    color: rgb(207, 216, 220);
 }

@@ -2,6 +2,7 @@ RegisterNetEvent("menu:registerModuleMenu")
 RegisterNetEvent("menu:addModuleSubMenu")
 RegisterNetEvent("menu:addModuleItem")
 RegisterNetEvent("menu:isIDRegistered")
+RegisterNetEvent("menu:setDesc")
 
 local moduleMenus = {}
 
@@ -12,10 +13,10 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 		end
 		return
 	end
-	name = trimTextLength(name)
+	local name = trimTextLength(name, config.items.maxnamelength)
 	
-	id = uuid()
-	table.insert(moduleMenus, {id = id, name = name, type = "menu", items = {}})
+	local id = uuid()
+	table.insert(moduleMenus, {id = id, name = name, items = {}})
 	SendNUIMessage({
 		addModuleMenu = {id = id, name = name}
 	})
@@ -38,17 +39,17 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 		end
 		return
 	end
-	name = trimTextLength(name)
+	local name = trimTextLength(name, config.items.maxnamelength)
 
 	if not isIDRegistered(parent) then
 		if cbdone then
 			cbdone(nil)
 		end
 	else
-		id = uuid()
+		local id = uuid()
 		
 		local moduleMenu = getByID(moduleMenus, parent)
-		table.insert(moduleMenu.items, {id = id, name = name, type = "menu", items = {}})
+		table.insert(moduleMenu.items, {id = id, name = name, items = {}})
 		
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
@@ -73,15 +74,15 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		end
 		return
 	end
-	name = trimTextLength(name)
+	local name = trimTextLength(name, config.items.maxnamelength)
 	if menu and not isIDRegistered(menu) then
 		if cbdone then
 			cbdone(nil)
 		end
 	else
-		id = uuid()
+		local id = uuid()
 		
-		local data = {id = id, name = name, type = "action"}
+		local data = {id = id, name = name}
 		if not menu then
 			table.insert(moduleMenus, data)
 		else
@@ -122,9 +123,21 @@ AddEventHandler("menu:isIDRegistered", function(id, cb)
 	end
 end)
 
-function trimTextLength(text)
-	if string.len(text) > config.items.maxtextlength then
-		return string.sub(text, 1, config.items.maxtextlength)
+AddEventHandler("menu:setDesc", function(id, text)
+	if not id or not isIDRegistered(id) or not text then
+		return
+	end
+	
+	local text = trimTextLength(text, config.items.maxdesclength)
+	
+	SendNUIMessage({
+		setDesc = {id = id, text = text}
+	})
+end)
+
+function trimTextLength(text, length)
+	if string.len(text) > length then
+		return string.sub(text, 1, length)
 	else
 		return text
 	end
@@ -132,7 +145,7 @@ end
 
 function getByID(items, id)
 	for _, item in ipairs(items) do
-		if item.id == id or (item.type == "menu" and getByID(item.items, id)) then
+		if item.id == id or (item.items and getByID(item.items, id)) then
 			return item
 		end
 	end

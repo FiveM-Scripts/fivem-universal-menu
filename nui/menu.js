@@ -5,8 +5,10 @@ var pagelimit = 10;
 
 var $container;
 var $subtitle;
+var $desc;
 var mainmenu;
 var menus = [];
+var items = [];
 var firstmodule = true;
 
 var content;
@@ -53,38 +55,39 @@ $(function() {
 				addModuleItem(mainmenu, data.addModuleItem);
 			else
 				addModuleItem(menus[data.addModuleItem.menu], data.addModuleItem);
-		}
+		} else if (data.setDesc)
+			setModuleElementDesc(data.setDesc.id, data.setDesc.text);
     });
 });
 
 function init() {
 	$container = $("#menucontainer");
 	$subtitle = $("#subtitle");
-	mainmenu = {id: "mainmenu", name: "Main Menu", menu: $("#mainmenu").remove(), items: [[]]};
-	menus["mainmenu"] = mainmenu;
+	$desc = $("#desc");
 	
-	mainmenu.menu.children().each(function(i, obj) {
-		mainmenu.items[0].push({item: $(this).remove()});
-	});
+	mainmenu = {id: "mainmenu", name: "Main Menu", menu: $("#mainmenu").remove(), items: []};
+	menus["mainmenu"] = mainmenu;
+	addModuleItem(mainmenu, {name: "Nothing in here it seems 🤔", id: "thenking", preset: true});
+	setModuleElementDesc("thenking", "Add modules for content");
 }
 
 function addModuleMenu(parentmenu, menu) {
-	if (!parentmenu.hasContent) {
+	if (!parentmenu.hasContent && !menu.preset) {
 		parentmenu.items[0] = [];
 		parentmenu.hasContent = true;
 	}
 	
 	menu.menu = "<div id='" + menu.id + "'></div>";
 	menu.parent = parentmenu.id;
-	menu.items = [[]];
-	menu.items[0].push({item: "<p class='menuoption'>It's empty in here!</p>"});
+	menu.items = [];
 	menus[menu.id] = menu;
+	addModuleItem(menu, {name: "It's empty in here!", id: menu.id + "-empty", preset: true});
 	
 	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id, name: menu.name});
 }
 
 function addModuleItem(menu, item) {
-	if (!menu.hasContent) {
+	if (!menu.hasContent && !item.preset) {
 		menu.items[0] = [];
 		menu.hasContent = true;
 	}
@@ -92,7 +95,20 @@ function addModuleItem(menu, item) {
 	var data = {item: "<p class='menuoption'>" + item.name + "</p>", itemid: item.id, name: item.name};
 	if (item.onoff != null)
 		data.datastate = item.onoff;
-	getEmptyItemSlotPage(menu).push(data);
+	
+	var menuPage = getEmptyItemSlotPage(menu);
+	var newSize = menuPage.push(data);
+	// Get latest element from page array, which should be this item
+	items[item.id] = menuPage[newSize - 1];
+}
+
+function setModuleElementDesc(id, text) {
+	var element = getModuleElementByID(id);
+	if (element)
+		element.desc = text;
+	
+	if (content != null)
+		updateDesc(content.items[currentpage][itemcounter]);
 }
 
 function getEmptyItemSlotPage(menu) {
@@ -122,9 +138,19 @@ function menuItemScroll(dir) {
 		else
 			itemcounter = 0;
 	}
-    
+	
+    updateDesc(content.items[currentpage][itemcounter]);
     $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption selected");
     playSound("NAV_UP_DOWN");
+}
+
+function updateDesc(item) {
+	if (item.desc == null)
+		$desc.hide();
+	else {
+		$desc.show();
+		$desc.text(item.desc);
+	}
 }
 
 function menuPageScroll(dir) {
@@ -180,13 +206,14 @@ function handleSelectedOption() {
     playSound("SELECT");
 }
 
-function resetSelected() {
+function resetSelect() {
     $(".menuoption").each(function(i, obj) {
         if ($(this).attr("class") == "menuoption selected")
             $(this).attr("class", "menuoption");
     });
     
     itemcounter = 0;
+	updateDesc(content.items[currentpage][itemcounter]);
     $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption selected");
 }
 
@@ -195,7 +222,7 @@ function showMenu(menu) {
         $("#" + content.id).remove();
     
     content = menu;
-    $container.append(content.menu);
+    $desc.before(content.menu);
 	$subtitle.text(content.name);
     
     showPage(0);
@@ -230,7 +257,7 @@ function showPage(page) {
     if (content.items.length - 1 > 0)
         $("#pageindicator").text("Page " + (currentpage + 1) + " / " + (content.items.length));
     
-    resetSelected();
+    resetSelect();
 }
 
 function pageExists(page) {
@@ -249,4 +276,11 @@ function playSound(sound) {
 
 function debug(msg) {
     sendData("print", {msg: msg});
+}
+
+function getModuleElementByID(id) {
+	if (menus[id] != null)
+		return menus[id];
+	else if (items[id] != null)
+		return items[id];
 }
