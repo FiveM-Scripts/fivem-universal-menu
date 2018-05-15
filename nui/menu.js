@@ -1,9 +1,10 @@
 var itemcounter;
 var currentpage;
+var itemcounteroffset = 2;
 var pagelimit = 10;
 
 var $container;
-var $title;
+var $subtitle;
 var mainmenu;
 var menus = [];
 var firstmodule = true;
@@ -58,8 +59,8 @@ $(function() {
 
 function init() {
 	$container = $("#menucontainer");
-	$title = $("#title");
-	mainmenu = {id: "mainmenu", name: "Universal Menu", menu: $("#mainmenu").remove(), items: [[]]};
+	$subtitle = $("#subtitle");
+	mainmenu = {id: "mainmenu", name: "Main Menu", menu: $("#mainmenu").remove(), items: [[]]};
 	menus["mainmenu"] = mainmenu;
 	
 	mainmenu.menu.children().each(function(i, obj) {
@@ -107,7 +108,7 @@ function getEmptyItemSlotPage(menu) {
 }
 
 function menuItemScroll(dir) {
-    $(".menuoption").eq(itemcounter + 1).attr("class", "menuoption");
+    $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption");
     
 	var itemamount = content.items[currentpage].length - 1;
 	if (dir == "up") {
@@ -122,7 +123,7 @@ function menuItemScroll(dir) {
 			itemcounter = 0;
 	}
     
-    $(".menuoption").eq(itemcounter + 1).attr("class", "menuoption selected");
+    $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption selected");
     playSound("NAV_UP_DOWN");
 }
 
@@ -171,7 +172,7 @@ function handleSelectedOption() {
 		if (item.datastate != null) {
 			item.datastate = !item.datastate;
 			data.datastate = item.datastate;
-			updateItemDataStateText($(".menuoption").eq(itemcounter + 1), data.datastate);
+			updateItemDataStateText($(".menuoption").eq(itemcounter + itemcounteroffset), data.datastate);
 		}
 		sendData(item.itemid, data);
 	}
@@ -186,7 +187,7 @@ function resetSelected() {
     });
     
     itemcounter = 0;
-    $(".menuoption").eq(itemcounter + 1).attr("class", "menuoption selected");
+    $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption selected");
 }
 
 function showMenu(menu) {
@@ -195,7 +196,7 @@ function showMenu(menu) {
     
     content = menu;
     $container.append(content.menu);
-	$title.text(content.name);
+	$subtitle.text(content.name);
     
     showPage(0);
 }

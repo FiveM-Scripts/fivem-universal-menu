@@ -48,6 +48,18 @@ p {
     margin-right: 0;
 }
 
+.menuoption.menusubtitle {
+    font-size: 20px;
+    height: 30px;
+	color: rgb(207, 216, 220);
+    background: linear-gradient(90deg, rgba(33, 33, 33, 0.9), rgba(0, 0, 0, 0.8));
+}
+
+.menuoption.menusubtitle:after {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 #pageindicator {
     font-size: 20px;
     text-align: center;
