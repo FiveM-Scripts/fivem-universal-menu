@@ -33,7 +33,7 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 end)
 
 AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicked)
-	if not parent or not name then
+	if not parent or not isIDRegistered(parent) or not name then
 		if cbdone then
 			cbdone(nil)
 		end
@@ -41,29 +41,23 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 	end
 	local name = trimTextLength(name, config.items.maxnamelength)
 
-	if not isIDRegistered(parent) then
-		if cbdone then
-			cbdone(nil)
-		end
-	else
-		local id = uuid()
-		
-		local moduleMenu = getByID(moduleMenus, parent)
-		table.insert(moduleMenu.items, {id = id, name = name, items = {}})
-		
-		SendNUIMessage({
-			addModuleSubMenu = {parent = parent, id = id, name = name}
-		})
-		
-		if cbclicked then
-			RegisterNUICallback(id, function(data, mcb)
-				cbclicked(id)
-			end)
-		end
-		
-		if cbdone then
-			cbdone(id)
-		end
+	local id = uuid()
+	
+	local moduleMenu = getByID(moduleMenus, parent)
+	table.insert(moduleMenu.items, {id = id, name = name, items = {}})
+	
+	SendNUIMessage({
+		addModuleSubMenu = {parent = parent, id = id, name = name}
+	})
+	
+	if cbclicked then
+		RegisterNUICallback(id, function(data, mcb)
+			cbclicked(id)
+		end)
+	end
+	
+	if cbdone then
+		cbdone(id)
 	end
 end)
 
