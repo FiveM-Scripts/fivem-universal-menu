@@ -1,16 +1,16 @@
 @font-face {
     font-family: "Roboto";
-    src: url("Roboto.ttf");
+    src: url("fonts/Roboto.ttf");
+}
+
+p {
+    font-family: "Roboto";
 }
 
 #menucontainer {
     position: absolute;
     right: 200px;
     top: 100px;
-}
-
-p {
-    font-family: "Roboto";
 }
 
 .menuoption {
@@ -36,6 +36,10 @@ p {
     background: linear-gradient(90deg, rgba(176, 190, 197, 1.0), rgba(144, 164, 174, 0.9));
 }
 
+.menuoption.submenuitem:after {
+    content: ">>";
+}
+
 .menuoption.menutitle {
     justify-content: center;
     font-size: 25px;
@@ -55,21 +59,11 @@ p {
     background: linear-gradient(90deg, rgba(33, 33, 33, 0.9), rgba(0, 0, 0, 0.8));
 }
 
-.menuoption.menusubtitle:after {
-    margin-left: 0;
-    margin-right: 0;
-}
-
 .menuoption.itemdesc {
     font-size: 20px;
     height: 105px;
     background: linear-gradient(90deg, rgba(33, 33, 33, 0.8), rgba(0, 0, 0, 0.7));
 	display: none;
-}
-
-.menuoption.itemdesc:after {
-    margin-left: 0;
-    margin-right: 0;
 }
 
 #pageindicator {

@@ -82,7 +82,7 @@ function addModuleMenu(parentmenu, menu) {
 	menus[menu.id] = menu;
 	addModuleItem(menu, {name: "It's empty in here!", id: menu.id + "-empty", preset: true});
 	
-	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption'>" + menu.name + "</p>", subid: menu.id, name: menu.name});
+	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption submenuitem'>" + menu.name + "</p>", subid: menu.id, name: menu.name});
 }
 
 function addModuleItem(menu, item) {
@@ -123,7 +123,7 @@ function getEmptyItemSlotPage(menu) {
 }
 
 function menuItemScroll(dir) {
-    $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption");
+    $(".menuoption").eq(itemcounter + itemcounteroffset).removeClass("selected");
     
 	var itemamount = content.items[currentpage].length - 1;
 	if (dir == "up") {
@@ -139,7 +139,7 @@ function menuItemScroll(dir) {
 	}
 	
     updateDesc(content.items[currentpage][itemcounter]);
-    $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption selected");
+    $(".menuoption").eq(itemcounter + itemcounteroffset).addClass("selected");
     playSound("NAV_UP_DOWN");
 }
 
@@ -207,13 +207,12 @@ function handleSelectedOption() {
 
 function resetSelect() {
     $(".menuoption").each(function(i, obj) {
-        if ($(this).attr("class") == "menuoption selected")
-            $(this).attr("class", "menuoption");
+		$(this).removeClass("selected");
     });
     
     itemcounter = 0;
 	updateDesc(content.items[currentpage][itemcounter]);
-    $(".menuoption").eq(itemcounter + itemcounteroffset).attr("class", "menuoption selected");
+    $(".menuoption").eq(itemcounter + itemcounteroffset).addClass("selected");
 }
 
 function showMenu(menu) {

@@ -14,7 +14,8 @@ function handleConfig(config) {
 	//setItemsColorFromConfig(config);
 	//setSelectedItemsColorFromConfig(config);
 	
-	pagelimit = config.items.pagelimit;
+	if (config.items.pagelimit)
+		pagelimit = config.items.pagelimit;
 }
 
 function setTitleTextFromConfig(config) {

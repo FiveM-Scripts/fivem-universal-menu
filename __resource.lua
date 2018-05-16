@@ -1,5 +1,5 @@
 resource_manifest_version "44febabe-d386-4d18-afbe-5e627f4af937"
-resource_version "2.0"
+resource_version "2.1"
 
 ui_page "nui/menu.html"
 
@@ -8,7 +8,7 @@ files {
 	"nui/menu.js",
 	"nui/config.js",
 	"nui/menu.css",
-	"nui/Roboto.ttf"
+	"nui/fonts/Roboto.ttf"
 }
 
 client_scripts {
