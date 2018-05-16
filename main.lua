@@ -5,18 +5,26 @@ Citizen.CreateThread(function()
 		if not blockinput then
 			for _, data in ipairs(config.controls) do
 				if menuopen or data.alwayslisten then
-					if IsControlJustPressed(1, data.control) then
-						data.scrollcooldown = config.scrolling.cooldown
-						send(data.action)
-					elseif IsControlPressed(1, data.control) and data.scrollcooldown then
-						if data.scrollcooldown > 0 then
-							data.scrollcooldown = data.scrollcooldown - 1
-						else
-							data.scrollcooldown = config.scrolling.continouscooldown
-							send(data.action)
+					for i, control in ipairs(data.control) do
+						if not IsControlPressed(1, control) then
+							break
 						end
-					elseif IsControlJustReleased(1, data.control) then
-						data.scrollcooldown = 0
+						
+						if i == #data.control then -- check if all specified controls are pressed
+							if IsControlJustPressed(1, control) then
+								data.scrollcooldown = config.scrolling.cooldown
+								send(data.action)
+							elseif IsControlPressed(1, control) and data.scrollcooldown then
+								if data.scrollcooldown > 0 then
+									data.scrollcooldown = data.scrollcooldown - 1
+								else
+									data.scrollcooldown = config.scrolling.continouscooldown
+									send(data.action)
+								end
+							elseif IsControlJustReleased(1, control) then
+								data.scrollcooldown = 0
+							end
+						end
 					end
 				end
 			end

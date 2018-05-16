@@ -12,13 +12,14 @@
 
 config = {
 	controls = {
-		{control = 167, action = "toggle", alwayslisten = true}, -- Open/Close Menu (F6 by default)
-		{control = 172, action = "up"}, -- Up
-		{control = 173, action = "down"}, -- Down
-		{control = 174, action = "left"}, -- Previous Page
-		{control = 175, action = "right"}, -- Next Page
-		{control = 176, action = "enter"}, -- Enter
-		{control = 177, action = "back"} -- Back
+		{control = {167}, action = "toggle", alwayslisten = true}, -- Open/Close Menu (F6 by default)
+		{control = {206, 47}, action = "toggle", alwayslisten = true}, -- Open/Close Menu with Controller (RB + DPAD Left by default)
+		{control = {172}, action = "up"}, -- Up
+		{control = {173}, action = "down"}, -- Down
+		{control = {174}, action = "left"}, -- Previous Page
+		{control = {175}, action = "right"}, -- Next Page
+		{control = {176}, action = "enter"}, -- Enter
+		{control = {177}, action = "back"} -- Back
 	},
 	
 	title = {
