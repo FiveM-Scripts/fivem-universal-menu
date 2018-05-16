@@ -9,7 +9,6 @@ var $desc;
 var mainmenu;
 var menus = [];
 var items = [];
-var firstmodule = true;
 
 var content;
 var pageindicator = "<p id='pageindicator'></p>"
