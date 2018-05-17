@@ -37,6 +37,7 @@ AddEventHandler("playerSpawned", function(spawn)
 		SendNUIMessage({
 			config = {data = config}
 		})
+		TriggerEvent("menu:setup")
 		alreadySpawned = true
 	end
 end)
