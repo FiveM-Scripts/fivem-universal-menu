@@ -38,6 +38,7 @@ AddEventHandler("playerSpawned", function(spawn)
 			config = {data = config}
 		})
 		TriggerEvent("menu:setup")
+		TriggerServerEvent("menu:setup")
 		alreadySpawned = true
 	end
 end)
