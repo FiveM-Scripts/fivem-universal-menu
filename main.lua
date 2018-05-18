@@ -32,16 +32,26 @@ Citizen.CreateThread(function()
 	end
 end)
 
+function init()
+	SendNUIMessage({
+		config = {data = config}
+	})
+	TriggerEvent("menu:setup")
+	TriggerServerEvent("menu:setup")
+end
+
 AddEventHandler("playerSpawned", function(spawn)
 	if not alreadySpawned then
-		SendNUIMessage({
-			config = {data = config}
-		})
-		TriggerEvent("menu:setup")
-		TriggerServerEvent("menu:setup")
+		init()
 		alreadySpawned = true
 	end
 end)
+
+-- Init on resource reload
+if GetPlayerPed(-1) then
+	init()
+	alreadySpawned = true
+end
 
 RegisterNUICallback("playsound", function(data, cb)
 	PlaySoundFrontend(-1, data.name, "HUD_FRONTEND_DEFAULT_SOUNDSET",  true)
