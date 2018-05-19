@@ -156,6 +156,12 @@ function showPage(page) {
 		
 		if (item.datastate != null)
 			updateItemDataStateText($item, item.datastate);
+		else {
+			if (item.righttext == null)
+				$item.attr("data-state", "");
+			else
+				$item.attr("data-state", item.righttext);
+		}
 		
 		if (item.extraClasses != null) {
 			for (var j = 0; j < item.extraClasses.length; j++)

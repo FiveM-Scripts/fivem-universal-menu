@@ -5,8 +5,9 @@ RegisterNetEvent("menu:isIDRegistered")
 RegisterNetEvent("menu:setDesc")
 RegisterNetEvent("menu:setGreyedOut")
 RegisterNetEvent("menu:isGreyedOut")
+RegisterNetEvent("menu:setRightText")
 
-local moduleMenus = {}
+local moduleContent = {}
 
 AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 	if not name then
@@ -17,7 +18,7 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 		local name = trimTextLength(name, config.items.maxnamelength)
 		
 		local id = uuid()
-		table.insert(moduleMenus, {id = id, name = name, items = {}})
+		table.insert(moduleContent, {id = id, name = name, items = {}})
 		SendNUIMessage({
 			addModuleMenu = {id = id, name = name}
 		})
@@ -44,8 +45,7 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 
 		local id = uuid()
 		
-		local moduleMenu = getByID(moduleMenus, parent)
-		table.insert(moduleMenu.items, {id = id, name = name, items = {}})
+		table.insert(moduleContent, {id = id, name = name, items = {}})
 		
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
@@ -77,13 +77,8 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		else
 			local id = uuid()
 			
-			local data = {id = id, name = name}
-			if not menu then
-				table.insert(moduleMenus, data)
-			else
-				local moduleMenu = getByID(moduleMenus, menu)
-				table.insert(moduleMenu.items, data)
-			end
+			local data = {id = id, name = name, onoff = onoff}
+			table.insert(moduleContent, data)
 				
 			SendNUIMessage({
 				addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
@@ -131,7 +126,7 @@ end)
 
 AddEventHandler("menu:setGreyedOut", function(state, id)
 	if id and isIDRegistered(id) and type(state) == "boolean" then
-		getByID(moduleMenus, id).greyedout = state
+		getByID(id).greyedout = state
 		
 		SendNUIMessage({
 			setExtraClass = {id = id, className = "greyedout", state = state}
@@ -141,7 +136,29 @@ end)
 
 AddEventHandler("menu:isGreyedOut", function(id, cb)
 	if id and isIDRegistered(id) and cb then
-		cb(getByID(moduleMenus, id).greyedout)
+		cb(getByID(id).greyedout)
+	end
+end)
+
+AddEventHandler("menu:setRightText", function(id, text)
+	if id and isIDRegistered(id) then
+		if text then
+			local text = trimTextLength(text, config.items.righttextlength)
+		end
+		local element = getByID(id)
+		element.righttext = text
+		
+		if element.onoff == nil and not element.items then
+			SendNUIMessage({
+				setRightText = {id = id, text = text}
+			})
+		end
+	end
+end)
+
+AddEventHandler("menu:getRightText", function(id, cb)
+	if id and isIDRegistered(id) and cb then
+		cb(getByID(id).righttext)
 	end
 end)
 
@@ -153,16 +170,16 @@ function trimTextLength(text, length)
 	end
 end
 
-function getByID(items, id)
-	for _, item in ipairs(items) do
-		if item.id == id or (item.items and getByID(item.items, id)) then
+function getByID(id)
+	for _, item in ipairs(moduleContent) do
+		if item.id == id then
 			return item
 		end
 	end
 end
 
 function isIDRegistered(id)
-	return getByID(moduleMenus, id) ~= nil
+	return getByID(id) ~= nil
 end
 
 math.randomseed(GetGameTimer())

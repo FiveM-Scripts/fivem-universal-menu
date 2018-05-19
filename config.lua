@@ -69,6 +69,30 @@ config = {
 		}
 	},
 	
+	description = {
+		color = {
+			from = {
+				r = 33,
+				g = 33,
+				b = 33,
+				a = 0.8
+			},
+			
+			to = {
+				r = 0,
+				g = 0,
+				b = 0,
+				a = 0.7
+			},
+			
+			font = {
+				r = 245,
+				g = 245,
+				b = 245
+			}
+		}
+	},
+	
 	scrolling = {
 		cooldown = 25, -- Time after holding an arrow key to start continous scrolling
 		continouscooldown = 5 -- Time between scrolls in continous scrolling mode
@@ -77,6 +101,7 @@ config = {
 	items = {
 		maxnamelength = 25, -- Maximum length a name can be
 		pagelimit = 10, -- Max amount of items on one page (before auto-paging kicks in)
-		maxdesclength = 125 -- Maximum length a description can be
+		maxdesclength = 125, -- Maximum length a description can be
+		righttextlength = 6 -- Maximum length of right text
 	}
 }

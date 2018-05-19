@@ -15,6 +15,8 @@ $(function() {
 			setModuleElementDesc(data.setDesc.id, data.setDesc.text);
 		else if (data.setExtraClass)
 			setModuleElementExtraClass(data.setExtraClass.id, data.setExtraClass.className, data.setExtraClass.state);
+		else if (data.setRightText)
+			setModuleItemRightText(data.setRightText.id, data.setRightText.text);
     });
 });
 
@@ -83,6 +85,22 @@ function getModuleElementExtraClass(element, className) {
 	for (var i = 0; i < element.extraClasses.length; i++)
 		if (element.extraClasses[i].name == className)
 			return element.extraClasses[i];
+}
+
+function setModuleItemRightText(id, text) {
+	getModuleElementByID(id).righttext = text;
+	
+	// Update if element is being displayed
+	if (content != null) {
+		for (var i = 0; i < content.items[currentpage].length; i++) {
+			if (content.items[currentpage][i].id == id) {
+				if (text == null)
+					$(".menuoption").eq(i + itemcounteroffset).attr("data-state", "");
+				else
+					$(".menuoption").eq(i + itemcounteroffset).attr("data-state", content.items[currentpage][i].righttext);
+			}
+		}
+	}
 }
 
 function getEmptyItemSlotPage(menu) {

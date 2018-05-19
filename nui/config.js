@@ -11,6 +11,7 @@ function handleConfig(config) {
 	setTitleTextFromConfig(config);
 	setTitleColorFromConfig(config);
 	setSubtitleColorFromConfig(config);
+	setDescColorFromConfig(config);
 	
 	if (config.items.pagelimit != null)
 		pagelimit = config.items.pagelimit;
@@ -54,5 +55,23 @@ function setSubtitleColorFromConfig(config) {
 		}
 		
 		$subtitle.css("color", "rgb(" + color.font.r + "," + color.font.g + "," + color.font.b + ")");
+	}
+}
+
+function setDescColorFromConfig(config) {
+	var color = config.description.color;
+	var $desc = $("#desc");
+	if (color != null) {
+		if (color.css != null)
+			$desc.css("background", color.css);
+		else {
+			var from = color.from;
+			var to = color.to;
+			$desc.css("background",
+				"linear-gradient(90deg, rgba(" + from.r + "," + from.g + "," + from.b + "," + from.a + ")" + 
+				", rgba(" + to.r + "," + to.g + "," + to.b + "," + to.a + ")");
+		}
+		
+		$desc.css("color", "rgb(" + color.font.r + "," + color.font.g + "," + color.font.b + ")");
 	}
 }
