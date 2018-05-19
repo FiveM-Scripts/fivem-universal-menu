@@ -17,18 +17,22 @@ $(function() {
 			setModuleElementExtraClass(data.setExtraClass.id, data.setExtraClass.className, data.setExtraClass.state);
 		else if (data.setRightText)
 			setModuleItemRightText(data.setRightText.id, data.setRightText.text);
+		else if (data.removeElements)
+			removeElementsByIDsProperly(data.removeElements.removables);
     });
 });
 
 function addModuleMenu(parentmenu, menu) {
-	if (!parentmenu.hasContent && !menu.preset) {
+	if (parentmenu != null && !parentmenu.hasContent && !menu.preset) {
 		parentmenu.items[0] = [];
 		parentmenu.hasContent = true;
 	}
 	
 	menu.menu = "<div id='" + menu.id + "'></div>";
 	menu.parent = parentmenu.id;
+	menu.type = "menu";
 	menu.items = [];
+	menu.extraClasses = [];
 	menus[menu.id] = menu;
 	addModuleItem(menu, {name: "It's empty in here!", id: menu.id + "-empty", preset: true});
 	
@@ -37,17 +41,18 @@ function addModuleMenu(parentmenu, menu) {
 }
 
 function addModuleItem(menu, item) {
-	if (!menu.hasContent && !item.preset) {
+	if (menu != null && !menu.hasContent && !item.preset) {
 		menu.items[0] = [];
 		menu.hasContent = true;
 	}
 	
-	var data = {item: "<p class='menuoption'>" + item.name + "</p>", id: item.id, name: item.name, type: "item", extraClasses: []};
-	if (item.onoff != null)
-		data.datastate = item.onoff;
+	item.item = "<p class='menuoption'>" + item.name + "</p>";
+	item.parent = menu.id;
+	item.type = "item";
+	item.extraClasses = [];
 	
 	var menuPage = getEmptyItemSlotPage(menu);
-	var newSize = menuPage.push(data);
+	var newSize = menuPage.push(item);
 	// Get latest element from page array, which should be this item
 	items[item.id] = menuPage[newSize - 1];
 }
@@ -101,6 +106,47 @@ function setModuleItemRightText(id, text) {
 			}
 		}
 	}
+}
+
+function removeElementsByIDsProperly(ids) {
+	var afterwardsMenu;
+	
+	if (content != null)
+		for (var i = 0; i < content.items[currentpage].length; i++)
+			for (var j = 0; j < ids.length; j++)
+				if (content.items[currentpage][i].id == ids[j])
+					afterwardsMenu = content.items[currentpage][i].parent;
+				
+	for (var i = 0; i < ids.length; i++)
+		removeElementByID(ids[i]);
+	
+	if (afterwardsMenu != null)
+		if (menus[afterwardsMenu] == null)
+			showMenu(mainmenu);
+		else
+			showMenu(menus[afterwardsMenu]);
+}
+
+function removeElementByID(id) {
+	debug(id + " " + getModuleElementByID(id))
+	var parentElement = getModuleElementByID(getModuleElementByID(id).parent);
+	if (parentElement != null)
+		for (var i = 0; i < parentElement.items.length; i++)
+			for (var j = parentElement.items[i].length - 1; j > -1; j--)
+				if (parentElement.items[i][j].id == id) {
+					parentElement.items[i].splice(j, 1);
+					
+					if (j == 0) {
+						parentElement.items.splice(i, 1);
+						if (i == 0)
+							removeElementByID(parentElement.id);
+					}
+				}
+		
+	if (items[id] != null)
+		items[id] = null;
+	else if (menus[id] != null)
+		menus[id] = null;
 }
 
 function getEmptyItemSlotPage(menu) {

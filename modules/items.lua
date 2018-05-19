@@ -6,6 +6,7 @@ RegisterNetEvent("menu:setDesc")
 RegisterNetEvent("menu:setGreyedOut")
 RegisterNetEvent("menu:isGreyedOut")
 RegisterNetEvent("menu:setRightText")
+RegisterNetEvent("menu:removeByID")
 
 local moduleContent = {}
 
@@ -18,7 +19,8 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 		local name = trimTextLength(name, config.items.maxnamelength)
 		
 		local id = uuid()
-		table.insert(moduleContent, {id = id, name = name, items = {}})
+		table.insert(moduleContent, {parents = {}, id = id, name = name, isMenu = true})
+		
 		SendNUIMessage({
 			addModuleMenu = {id = id, name = name}
 		})
@@ -42,10 +44,13 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 		end
 	else
 		local name = trimTextLength(name, config.items.maxnamelength)
-
 		local id = uuid()
 		
-		table.insert(moduleContent, {id = id, name = name, items = {}})
+		local parentElement = getByID(parent)
+		local parents = table.shallow_copy(parentElement.parents)
+		table.insert(parents, parent)
+		
+		table.insert(moduleContent, {parents = parents, id = id, name = name, isMenu = true})
 		
 		SendNUIMessage({
 			addModuleSubMenu = {parent = parent, id = id, name = name}
@@ -77,7 +82,11 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		else
 			local id = uuid()
 			
-			local data = {id = id, name = name, onoff = onoff}
+			local parentElement = getByID(menu)
+			local parents = table.shallow_copy(parentElement.parents)
+			table.insert(parents, menu)
+			
+			local data = {parents = parents, id = id, name = name, onoff = onoff}
 			table.insert(moduleContent, data)
 				
 			SendNUIMessage({
@@ -148,7 +157,7 @@ AddEventHandler("menu:setRightText", function(id, text)
 		local element = getByID(id)
 		element.righttext = text
 		
-		if element.onoff == nil and not element.items then
+		if element.onoff == nil and not element.isMenu then
 			SendNUIMessage({
 				setRightText = {id = id, text = text}
 			})
@@ -159,6 +168,34 @@ end)
 AddEventHandler("menu:getRightText", function(id, cb)
 	if id and isIDRegistered(id) and cb then
 		cb(getByID(id).righttext)
+	end
+end)
+
+AddEventHandler("menu:removeByID", function(id)
+	if id and isIDRegistered(id) then
+		local removables = {}
+		for _, element in ipairs(moduleContent) do
+			for _, parent in ipairs(element.parents) do
+				if parent == id then
+					table.insert(removables, element.id)
+				end
+			end
+		end
+		if not getByID(id).isMenu then
+			table.insert(removables, id)
+		end
+		
+		SendNUIMessage({
+			removeElements = {removables = removables}
+		})
+		
+		for i, removable in ipairs(removables) do
+			for i=#moduleContent, 1, -1 do
+				if moduleContent[i].id == removable then
+					table.remove(moduleContent, i)
+				end
+			end
+		end
 	end
 end)
 
@@ -180,6 +217,14 @@ end
 
 function isIDRegistered(id)
 	return getByID(id) ~= nil
+end
+
+function table.shallow_copy(t)
+  local t2 = {}
+  for k,v in pairs(t) do
+    t2[k] = v
+  end
+  return t2
 end
 
 math.randomseed(GetGameTimer())

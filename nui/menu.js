@@ -53,7 +53,7 @@ function init() {
 	$desc = $("#desc");
 	
 	mainmenu = {id: "mainmenu", name: "Main Menu", menu: $("#mainmenu").remove(), items: []};
-	menus["mainmenu"] = mainmenu;
+	menus[mainmenu.id] = mainmenu;
 	addModuleItem(mainmenu, {name: "Nothing in here it seems 🤔", id: "thenking", preset: true});
 	setModuleElementDesc("thenking", "Add modules for content");
 }
