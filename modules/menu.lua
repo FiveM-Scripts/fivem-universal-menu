@@ -2,6 +2,7 @@ RegisterNetEvent("menu:exists")
 RegisterNetEvent("menu:getVersion")
 RegisterNetEvent("menu:blockInput")
 RegisterNetEvent("menu:hideMenu")
+RegisterNetEvent("menu:isMenuShown")
 
 AddEventHandler("menu:exists", function(cb)
 	if cb then
@@ -26,5 +27,11 @@ AddEventHandler("menu:hideMenu", function()
 		SendNUIMessage({
 			hidemenu = true
 		})
+	end
+end)
+
+AddEventHandler("menu:isMenuShown", function(cb)
+	if cb then
+		cb(menuopen)
 	end
 end)
