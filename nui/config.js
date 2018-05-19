@@ -12,7 +12,7 @@ function handleConfig(config) {
 	setTitleColorFromConfig(config);
 	setSubtitleColorFromConfig(config);
 	
-	if (config.items.pagelimit)
+	if (config.items.pagelimit != null)
 		pagelimit = config.items.pagelimit;
 }
 
@@ -24,8 +24,8 @@ function setTitleTextFromConfig(config) {
 function setTitleColorFromConfig(config) {
 	var color = config.title.color;
 	var $title = $("#title");
-	if (color) {
-		if (color.css)
+	if (color != null) {
+		if (color.css != null)
 			$title.css("background", color.css);
 		else {
 			var from = color.from;
@@ -42,8 +42,8 @@ function setTitleColorFromConfig(config) {
 function setSubtitleColorFromConfig(config) {
 	var color = config.title.color.subtitle;
 	var $subtitle = $("#subtitle");
-	if (color) {
-		if (color.css)
+	if (color != null) {
+		if (color.css != null)
 			$subtitle.css("background", color.css);
 		else {
 			var from = color.from;

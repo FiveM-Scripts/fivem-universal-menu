@@ -3,6 +3,8 @@ RegisterNetEvent("menu:addModuleSubMenu")
 RegisterNetEvent("menu:addModuleItem")
 RegisterNetEvent("menu:isIDRegistered")
 RegisterNetEvent("menu:setDesc")
+RegisterNetEvent("menu:setGreyedOut")
+RegisterNetEvent("menu:isGreyedOut")
 
 local moduleMenus = {}
 
@@ -11,24 +13,24 @@ AddEventHandler("menu:registerModuleMenu", function(name, cbdone, cbclicked)
 		if cbdone then
 			cbdone(nil)
 		end
-		return
-	end
-	local name = trimTextLength(name, config.items.maxnamelength)
-	
-	local id = uuid()
-	table.insert(moduleMenus, {id = id, name = name, items = {}})
-	SendNUIMessage({
-		addModuleMenu = {id = id, name = name}
-	})
-	
-	if cbclicked then
-		RegisterNUICallback(id, function(data, mcb)
-			cbclicked(id)
-		end)
-	end
-	
-	if cbdone then
-		cbdone(id)
+	else
+		local name = trimTextLength(name, config.items.maxnamelength)
+		
+		local id = uuid()
+		table.insert(moduleMenus, {id = id, name = name, items = {}})
+		SendNUIMessage({
+			addModuleMenu = {id = id, name = name}
+		})
+		
+		if cbclicked then
+			RegisterNUICallback(id, function(data, mcb)
+				cbclicked(id)
+			end)
+		end
+		
+		if cbdone then
+			cbdone(id)
+		end
 	end
 end)
 
@@ -37,27 +39,27 @@ AddEventHandler("menu:addModuleSubMenu", function(parent, name, cbdone, cbclicke
 		if cbdone then
 			cbdone(nil)
 		end
-		return
-	end
-	local name = trimTextLength(name, config.items.maxnamelength)
+	else
+		local name = trimTextLength(name, config.items.maxnamelength)
 
-	local id = uuid()
-	
-	local moduleMenu = getByID(moduleMenus, parent)
-	table.insert(moduleMenu.items, {id = id, name = name, items = {}})
-	
-	SendNUIMessage({
-		addModuleSubMenu = {parent = parent, id = id, name = name}
-	})
-	
-	if cbclicked then
-		RegisterNUICallback(id, function(data, mcb)
-			cbclicked(id)
-		end)
-	end
-	
-	if cbdone then
-		cbdone(id)
+		local id = uuid()
+		
+		local moduleMenu = getByID(moduleMenus, parent)
+		table.insert(moduleMenu.items, {id = id, name = name, items = {}})
+		
+		SendNUIMessage({
+			addModuleSubMenu = {parent = parent, id = id, name = name}
+		})
+		
+		if cbclicked then
+			RegisterNUICallback(id, function(data, mcb)
+				cbclicked(id)
+			end)
+		end
+		
+		if cbdone then
+			cbdone(id)
+		end
 	end
 end)
 
@@ -66,42 +68,42 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 		if cbdone then
 			cbdone(nil)
 		end
-		return
-	end
-	local name = trimTextLength(name, config.items.maxnamelength)
-	if menu and not isIDRegistered(menu) then
-		if cbdone then
-			cbdone(nil)
-		end
 	else
-		local id = uuid()
-		
-		local data = {id = id, name = name}
-		if not menu then
-			table.insert(moduleMenus, data)
-		else
-			local moduleMenu = getByID(moduleMenus, menu)
-			table.insert(moduleMenu.items, data)
-		end
-			
-		SendNUIMessage({
-			addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
-		})
-		
-		if cbclicked then
-			if onoff ~= false and onoff ~= true then
-				RegisterNUICallback(id, function(data, mcb)
-					cbclicked(id, nil)
-				end)
-			else
-				RegisterNUICallback(id, function(data, mcb)
-					cbclicked(id, data.datastate)
-				end)
+		local name = trimTextLength(name, config.items.maxnamelength)
+		if menu and not isIDRegistered(menu) then
+			if cbdone then
+				cbdone(nil)
 			end
-		end
-		
-		if cbdone then
-			cbdone(id)
+		else
+			local id = uuid()
+			
+			local data = {id = id, name = name}
+			if not menu then
+				table.insert(moduleMenus, data)
+			else
+				local moduleMenu = getByID(moduleMenus, menu)
+				table.insert(moduleMenu.items, data)
+			end
+				
+			SendNUIMessage({
+				addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
+			})
+			
+			if cbclicked then
+				if type(onoff) ~= "boolean" then
+					RegisterNUICallback(id, function(data, mcb)
+						cbclicked(id, nil)
+					end)
+				else
+					RegisterNUICallback(id, function(data, mcb)
+						cbclicked(id, data.datastate)
+					end)
+				end
+			end
+			
+			if cbdone then
+				cbdone(id)
+			end
 		end
 	end
 end)
@@ -118,15 +120,29 @@ AddEventHandler("menu:isIDRegistered", function(id, cb)
 end)
 
 AddEventHandler("menu:setDesc", function(id, text)
-	if not id or not isIDRegistered(id) or not text then
-		return
+	if id and isIDRegistered(id) and text then
+		local text = trimTextLength(text, config.items.maxdesclength)
+		
+		SendNUIMessage({
+			setDesc = {id = id, text = text}
+		})
 	end
-	
-	local text = trimTextLength(text, config.items.maxdesclength)
-	
-	SendNUIMessage({
-		setDesc = {id = id, text = text}
-	})
+end)
+
+AddEventHandler("menu:setGreyedOut", function(state, id)
+	if id and isIDRegistered(id) and type(state) == "boolean" then
+		getByID(moduleMenus, id).greyedout = state
+		
+		SendNUIMessage({
+			setExtraClass = {id = id, className = "greyedout", state = state}
+		})
+	end
+end)
+
+AddEventHandler("menu:isGreyedOut", function(id, cb)
+	if id and isIDRegistered(id) and cb then
+		cb(getByID(moduleMenus, id).greyedout)
+	end
 end)
 
 function trimTextLength(text, length)

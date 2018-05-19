@@ -1,4 +1,11 @@
 Citizen.CreateThread(function()
+	-- Init on resource reload
+	Wait(500)
+	if GetPlayerPed(-1) then
+		init()
+		alreadySpawned = true
+	end
+	
 	while true do
 		Wait(1)
 		
@@ -46,12 +53,6 @@ AddEventHandler("playerSpawned", function(spawn)
 		alreadySpawned = true
 	end
 end)
-
--- Init on resource reload
-if GetPlayerPed(-1) then
-	init()
-	alreadySpawned = true
-end
 
 RegisterNUICallback("playsound", function(data, cb)
 	PlaySoundFrontend(-1, data.name, "HUD_FRONTEND_DEFAULT_SOUNDSET",  true)

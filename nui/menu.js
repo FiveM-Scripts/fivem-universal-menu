@@ -44,18 +44,6 @@ $(function() {
             menuPageScroll("left");
         else if (data.menuright)
             menuPageScroll("right");
-		
-		else if (data.addModuleMenu)
-			addModuleMenu(mainmenu, data.addModuleMenu);
-		else if (data.addModuleSubMenu)
-			addModuleMenu(menus[data.addModuleSubMenu.parent], data.addModuleSubMenu);
-		else if (data.addModuleItem) {
-			if (!data.addModuleItem.menu)
-				addModuleItem(mainmenu, data.addModuleItem);
-			else
-				addModuleItem(menus[data.addModuleItem.menu], data.addModuleItem);
-		} else if (data.setDesc)
-			setModuleElementDesc(data.setDesc.id, data.setDesc.text);
     });
 });
 
@@ -68,58 +56,6 @@ function init() {
 	menus["mainmenu"] = mainmenu;
 	addModuleItem(mainmenu, {name: "Nothing in here it seems 🤔", id: "thenking", preset: true});
 	setModuleElementDesc("thenking", "Add modules for content");
-}
-
-function addModuleMenu(parentmenu, menu) {
-	if (!parentmenu.hasContent && !menu.preset) {
-		parentmenu.items[0] = [];
-		parentmenu.hasContent = true;
-	}
-	
-	menu.menu = "<div id='" + menu.id + "'></div>";
-	menu.parent = parentmenu.id;
-	menu.items = [];
-	menus[menu.id] = menu;
-	addModuleItem(menu, {name: "It's empty in here!", id: menu.id + "-empty", preset: true});
-	
-	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption submenuitem'>" + menu.name + "</p>", subid: menu.id, name: menu.name});
-}
-
-function addModuleItem(menu, item) {
-	if (!menu.hasContent && !item.preset) {
-		menu.items[0] = [];
-		menu.hasContent = true;
-	}
-	
-	var data = {item: "<p class='menuoption'>" + item.name + "</p>", itemid: item.id, name: item.name};
-	if (item.onoff != null)
-		data.datastate = item.onoff;
-	
-	var menuPage = getEmptyItemSlotPage(menu);
-	var newSize = menuPage.push(data);
-	// Get latest element from page array, which should be this item
-	items[item.id] = menuPage[newSize - 1];
-}
-
-function setModuleElementDesc(id, text) {
-	var element = getModuleElementByID(id);
-	if (element)
-		element.desc = text;
-	
-	if (content != null)
-		updateDesc(content.items[currentpage][itemcounter]);
-}
-
-function getEmptyItemSlotPage(menu) {
-	var page = 0;
-	while (true) {
-		if (menu.items[page] == null) {
-			menu.items[page] = [];
-			return menu.items[page];
-		} else if (menu.items[page].length < pagelimit)
-			return menu.items[page];
-		page++;
-	}
 }
 
 function menuItemScroll(dir) {
@@ -143,15 +79,6 @@ function menuItemScroll(dir) {
     playSound("NAV_UP_DOWN");
 }
 
-function updateDesc(item) {
-	if (item.desc == null)
-		$desc.hide();
-	else {
-		$desc.show();
-		$desc.text(item.desc);
-	}
-}
-
 function menuPageScroll(dir) {
 	var newpage;
 	if (dir == "left")
@@ -165,17 +92,6 @@ function menuPageScroll(dir) {
     playSound("NAV_UP_DOWN");
 }
 
-function menuNextPage() {
-    var newpage;
-    if (pageExists(currentpage + 1))
-        newpage = currentpage + 1;
-    else
-        newpage = 0;
-    
-    showPage(newpage);
-    playSound("NAV_UP_DOWN");
-}
-
 function menuBack() {
     if (content.parent == null) {
         $container.hide();
@@ -184,25 +100,6 @@ function menuBack() {
         showMenu(menus[content.parent]);
     
     playSound("BACK");
-}
-
-function handleSelectedOption() {
-    var item = content.items[currentpage][itemcounter];
-    
-    if (item.subid != null) {
-        showMenu(menus[item.subid]);
-		sendData(item.subid, {});
-    } else if (item.itemid != null) {
-		var data = {};
-		if (item.datastate != null) {
-			item.datastate = !item.datastate;
-			data.datastate = item.datastate;
-			updateItemDataStateText($(".menuoption").eq(itemcounter + itemcounteroffset), data.datastate);
-		}
-		sendData(item.itemid, data);
-	}
-    
-    playSound("SELECT");
 }
 
 function resetSelect() {
@@ -215,6 +112,25 @@ function resetSelect() {
     $(".menuoption").eq(itemcounter + itemcounteroffset).addClass("selected");
 }
 
+function handleSelectedOption() {
+    var item = content.items[currentpage][itemcounter];
+    
+    if (item.type == "menu") {
+        showMenu(menus[item.id]);
+		sendData(item.id, {});
+    } else if (item.type == "item") {
+		var data = {};
+		if (item.datastate != null) {
+			item.datastate = !item.datastate;
+			data.datastate = item.datastate;
+			updateItemDataStateText($(".menuoption").eq(itemcounter + itemcounteroffset), data.datastate);
+		}
+		sendData(item.id, data);
+	}
+    
+    playSound("SELECT");
+}
+
 function showMenu(menu) {
     if (content != null)
         $("#" + content.id).remove();
@@ -224,13 +140,6 @@ function showMenu(menu) {
 	$subtitle.text(content.name);
     
     showPage(0);
-}
-
-function updateItemDataStateText($item, state) {
-	var datastateText = "OFF";
-	if (state)
-		datastateText = "ON";
-	$item.attr("data-state", datastateText);
 }
 
 function showPage(page) {
@@ -247,6 +156,15 @@ function showPage(page) {
 		
 		if (item.datastate != null)
 			updateItemDataStateText($item, item.datastate);
+		
+		if (item.extraClasses != null) {
+			for (var j = 0; j < item.extraClasses.length; j++)
+				if (!item.extraClasses[j].state)
+					$item.removeClass(item.extraClasses[j].name);
+				else
+					$item.addClass(item.extraClasses[j].name);
+		}
+			
 		$content.append($item);
 	}
     
@@ -274,11 +192,4 @@ function playSound(sound) {
 
 function debug(msg) {
     sendData("print", {msg: msg});
-}
-
-function getModuleElementByID(id) {
-	if (menus[id] != null)
-		return menus[id];
-	else if (items[id] != null)
-		return items[id];
 }
