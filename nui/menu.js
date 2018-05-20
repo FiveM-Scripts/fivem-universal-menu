@@ -44,6 +44,9 @@ $(function() {
             menuPageScroll("left");
         else if (data.menuright)
             menuPageScroll("right");
+		
+		else if (data.toMainMenu)
+			showMenu(mainmenu);
     });
 });
 

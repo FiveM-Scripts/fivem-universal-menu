@@ -4,6 +4,7 @@ RegisterNetEvent("menu:blockInput")
 RegisterNetEvent("menu:hideMenu")
 RegisterNetEvent("menu:isMenuShown")
 RegisterNetEvent("menu:goBackMenu")
+RegisterNetEvent("menu:goToMainMenu")
 
 AddEventHandler("menu:exists", function(cb)
 	if cb then
@@ -41,5 +42,11 @@ AddEventHandler("menu:goBackMenu", function()
 	SendNUIMessage({
 		menuback = true,
 		nosound = true
+	})
+end)
+
+AddEventHandler("menu:goToMainMenu", function()
+	SendNUIMessage({
+		toMainMenu = true
 	})
 end)
