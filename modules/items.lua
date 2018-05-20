@@ -90,7 +90,7 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 			table.insert(moduleContent, data)
 				
 			SendNUIMessage({
-				addModuleItem = {menu = menu, id = id, name = name, onoff = onoff}
+				addModuleItem = {menu = menu, id = id, name = name, datastate = onoff}
 			})
 			
 			if cbclicked then

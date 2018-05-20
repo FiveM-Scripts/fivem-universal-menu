@@ -49,7 +49,6 @@ function addModuleItem(menu, item) {
 	item.item = "<p class='menuoption'>" + item.name + "</p>";
 	item.parent = menu.id;
 	item.type = "item";
-	item.datastate = item.onoff;
 	item.extraClasses = [];
 	
 	var menuPage = getEmptyItemSlotPage(menu);
