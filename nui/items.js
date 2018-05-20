@@ -38,6 +38,9 @@ function addModuleMenu(parentmenu, menu) {
 	
 	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption submenuitem'>" + menu.name + "</p>", id: menu.id,
 		name: menu.name, type: "menu", extraClasses: []});
+	
+	if (content != null && content.id == parentmenu.id)
+		showMenu(content);
 }
 
 function addModuleItem(menu, item) {
@@ -55,6 +58,9 @@ function addModuleItem(menu, item) {
 	var newSize = menuPage.push(item);
 	// Get latest element from page array, which should be this item
 	items[item.id] = menuPage[newSize - 1];
+	
+	if (content != null && content.id == menu.id)
+		showMenu(content);
 }
 
 function setModuleElementDesc(id, text) {
