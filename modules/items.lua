@@ -135,11 +135,14 @@ end)
 
 AddEventHandler("menu:setGreyedOut", function(state, id)
 	if id and isIDRegistered(id) and type(state) == "boolean" then
-		getByID(id).greyedout = state
+		local element = getByID(id)
 		
-		SendNUIMessage({
-			setExtraClass = {id = id, className = "greyedout", state = state}
-		})
+		if not element.greyedout == state then
+			element.greyedout = state
+			SendNUIMessage({
+				setExtraClass = {id = id, className = "greyedout", state = state}
+			})
+		end
 	end
 end)
 
