@@ -23,7 +23,7 @@ $(function() {
 });
 
 function addModuleMenu(parentmenu, menu) {
-	if (parentmenu != null && !parentmenu.hasContent && !menu.preset) {
+	if (!parentmenu.hasContent && !menu.preset) {
 		parentmenu.items[0] = [];
 		parentmenu.hasContent = true;
 	}
@@ -41,7 +41,7 @@ function addModuleMenu(parentmenu, menu) {
 }
 
 function addModuleItem(menu, item) {
-	if (menu != null && !menu.hasContent && !item.preset) {
+	if (!menu.hasContent && !item.preset) {
 		menu.items[0] = [];
 		menu.hasContent = true;
 	}
