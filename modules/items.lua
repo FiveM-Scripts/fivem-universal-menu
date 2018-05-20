@@ -126,10 +126,14 @@ end)
 AddEventHandler("menu:setDesc", function(id, text)
 	if id and isIDRegistered(id) and text then
 		local text = trimTextLength(text, config.items.maxdesclength)
+		local element = getByID(id)
 		
-		SendNUIMessage({
-			setDesc = {id = id, text = text}
-		})
+		if element.desc ~= text then
+			element.desc = text
+			SendNUIMessage({
+				setDesc = {id = id, text = text}
+			})
+		end
 	end
 end)
 
@@ -137,7 +141,7 @@ AddEventHandler("menu:setGreyedOut", function(state, id)
 	if id and isIDRegistered(id) and type(state) == "boolean" then
 		local element = getByID(id)
 		
-		if not element.greyedout == state then
+		if element.greyedout ~= state then
 			element.greyedout = state
 			SendNUIMessage({
 				setExtraClass = {id = id, className = "greyedout", state = state}
@@ -158,12 +162,15 @@ AddEventHandler("menu:setRightText", function(id, text)
 			local text = trimTextLength(text, config.items.righttextlength)
 		end
 		local element = getByID(id)
-		element.righttext = text
 		
-		if element.onoff == nil and not element.isMenu then
-			SendNUIMessage({
-				setRightText = {id = id, text = text}
-			})
+		if element.righttext ~= text then
+			element.righttext = text
+			
+			if element.onoff == nil and not element.isMenu then
+				SendNUIMessage({
+					setRightText = {id = id, text = text}
+				})
+			end
 		end
 	end
 end)
