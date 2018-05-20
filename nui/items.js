@@ -35,9 +35,7 @@ function addModuleMenu(parentmenu, menu) {
 	menu.extraClasses = [];
 	menus[menu.id] = menu;
 	addModuleItem(menu, {name: "It's empty in here!", id: menu.id + "-empty", preset: true});
-	
-	getEmptyItemSlotPage(parentmenu).push({item: "<p class='menuoption submenuitem'>" + menu.name + "</p>", id: menu.id,
-		name: menu.name, type: "menu", extraClasses: []});
+	addModuleItem(parentmenu, {id: menu.id, name: menu.name, isMenu: true, extraClasses: []});
 	
 	if (content != null && content.id == parentmenu.id)
 		showMenu(content);
@@ -49,9 +47,17 @@ function addModuleItem(menu, item) {
 		menu.hasContent = true;
 	}
 	
-	item.item = "<p class='menuoption'>" + item.name + "</p>";
+	var itemitem;
+	if (item.isMenu) {
+		itemitem = "<p class='menuoption submenuitem'>" + item.name + "</p>";
+		item.type = "menu";
+	} else {
+		itemitem = "<p class='menuoption'>" + item.name + "</p>";
+		item.type = "item";
+	}
+	
+	item.item = itemitem;
 	item.parent = menu.id;
-	item.type = "item";
 	item.extraClasses = [];
 	
 	var menuPage = getEmptyItemSlotPage(menu);
@@ -64,18 +70,16 @@ function addModuleItem(menu, item) {
 }
 
 function setModuleElementDesc(id, text) {
-	getModuleElementByID(id).desc = text;
+	items[id].desc = text;
 	
 	if (content)
 		updateDesc(content.items[currentpage][itemcounter]);
 }
 
 function setModuleElementExtraClass(id, className, state) {
-	var element = getModuleElementByID(id);
-	
-	var extraClass = getModuleElementExtraClass(element, className);
+	var extraClass = getModuleElementExtraClass(items[id], className);
 	if (extraClass == null)
-		element.extraClasses.push({name: className, state: state});
+		items[id].extraClasses.push({name: className, state: state});
 	else
 		extraClass.state = state;
 	
@@ -99,7 +103,7 @@ function getModuleElementExtraClass(element, className) {
 }
 
 function setModuleItemRightText(id, text) {
-	getModuleElementByID(id).righttext = text;
+	items[id].righttext = text;
 	
 	// Update if element is being displayed
 	if (content != null) {
@@ -134,7 +138,7 @@ function removeElementsByIDsProperly(ids) {
 }
 
 function removeElementByID(id) {
-	var parentElement = getModuleElementByID(getModuleElementByID(id).parent);
+	var parentElement = menus[items[id].parent];
 	if (parentElement != null)
 		for (var i = 0; i < parentElement.items.length; i++)
 			for (var j = parentElement.items[i].length - 1; j > -1; j--)
@@ -150,7 +154,7 @@ function removeElementByID(id) {
 		
 	if (items[id] != null)
 		items[id] = null;
-	else if (menus[id] != null)
+	if (menus[id] != null)
 		menus[id] = null;
 }
 
@@ -201,11 +205,4 @@ function updateItemDataStateText($item, state) {
 	if (state)
 		datastateText = "ON";
 	$item.attr("data-state", datastateText);
-}
-
-function getModuleElementByID(id) {
-	if (menus[id] != null)
-		return menus[id];
-	else if (items[id] != null)
-		return items[id];
 }

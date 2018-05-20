@@ -115,17 +115,19 @@ function resetSelect() {
 function handleSelectedOption() {
     var item = content.items[currentpage][itemcounter];
     
-    if (item.type == "menu") {
-        showMenu(menus[item.id]);
-		sendData(item.id, {});
-    } else if (item.type == "item") {
-		var data = {};
-		if (item.datastate != null) {
-			item.datastate = !item.datastate;
-			data.datastate = item.datastate;
-			updateItemDataStateText($(".menuoption").eq(itemcounter + itemcounteroffset), data.datastate);
+	if (getModuleElementExtraClass(item, "greyedout") == null) {
+		if (item.type == "menu") {
+			showMenu(menus[item.id]);
+			sendData(item.id, {});
+		} else if (item.type == "item") {
+			var data = {};
+			if (item.datastate != null) {
+				item.datastate = !item.datastate;
+				data.datastate = item.datastate;
+				updateItemDataStateText($(".menuoption").eq(itemcounter + itemcounteroffset), data.datastate);
+			}
+			sendData(item.id, data);
 		}
-		sendData(item.id, data);
 	}
     
     playSound("SELECT");
@@ -164,11 +166,12 @@ function showPage(page) {
 		}
 		
 		if (item.extraClasses != null) {
-			for (var j = 0; j < item.extraClasses.length; j++)
+			for (var j = 0; j < item.extraClasses.length; j++) {
 				if (!item.extraClasses[j].state)
 					$item.removeClass(item.extraClasses[j].name);
 				else
 					$item.addClass(item.extraClasses[j].name);
+			}
 		}
 			
 		$content.append($item);

@@ -36,12 +36,12 @@ p {
     background: linear-gradient(90deg, rgba(176, 190, 197, 1.0), rgba(144, 164, 174, 0.9));
 }
 
-.menuoption.greyedout {
+.greyedout {
     color: rgba(158, 158, 158, 0.8);
 	background: linear-gradient(90deg, rgba(66, 66, 66, 0.6), rgba(33, 33, 33, 0.5));
 }
 
-.menuoption.greyedout.selected {
+.greyedout.selected {
 	background: linear-gradient(90deg, rgba(176, 190, 197, 0.6), rgba(144, 164, 174, 0.5));
 }
 
