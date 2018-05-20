@@ -3,6 +3,7 @@ RegisterNetEvent("menu:getVersion")
 RegisterNetEvent("menu:blockInput")
 RegisterNetEvent("menu:hideMenu")
 RegisterNetEvent("menu:isMenuShown")
+RegisterNetEvent("menu:goBackMenu")
 
 AddEventHandler("menu:exists", function(cb)
 	if cb then
@@ -34,4 +35,11 @@ AddEventHandler("menu:isMenuShown", function(cb)
 	if cb then
 		cb(menuopen)
 	end
+end)
+
+AddEventHandler("menu:goBackMenu", function()
+	SendNUIMessage({
+		menuback = true,
+		nosound = true
+	})
 end)

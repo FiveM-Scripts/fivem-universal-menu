@@ -33,7 +33,7 @@ $(function() {
         else if (data.menuenter)
             handleSelectedOption();
         else if (data.menuback)
-            menuBack();
+            menuBack(data.nosound);
         
         else if (data.menuup)
             menuItemScroll("up");
@@ -92,14 +92,15 @@ function menuPageScroll(dir) {
     playSound("NAV_UP_DOWN");
 }
 
-function menuBack() {
+function menuBack(nosound) {
     if (content.parent == null) {
         $container.hide();
         sendData("menuclose", {});
     } else
         showMenu(menus[content.parent]);
     
-    playSound("BACK");
+	if (!nosound)
+		playSound("BACK");
 }
 
 function resetSelect() {
