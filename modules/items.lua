@@ -7,6 +7,8 @@ RegisterNetEvent("menu:setGreyedOut")
 RegisterNetEvent("menu:isGreyedOut")
 RegisterNetEvent("menu:setRightText")
 RegisterNetEvent("menu:removeByID")
+RegisterNetEvent("menu:setOnOffState")
+RegisterNetEvent("menu:getOnOffState")
 
 local moduleContent = {}
 
@@ -100,6 +102,7 @@ AddEventHandler("menu:addModuleItem", function(menu, name, onoff, cbdone, cbclic
 					end)
 				else
 					RegisterNUICallback(id, function(data, mcb)
+						getByID(id).onoff = data.datastate
 						cbclicked(id, data.datastate)
 					end)
 				end
@@ -206,6 +209,24 @@ AddEventHandler("menu:removeByID", function(id)
 				end
 			end
 		end
+	end
+end)
+
+AddEventHandler("menu:setOnOffState", function(id, state)
+	if id and isIDRegistered(id) and type(state) == "boolean" then
+		local element = getByID(id)
+		if element.onoff ~= nil and element.onoff ~= state then
+			element.onoff = state
+			SendNUIMessage({
+				setModuleItemDatastate = {id = id, state = state}
+			})
+		end
+	end
+end)
+
+AddEventHandler("menu:getOnOffState", function(id, cb)
+	if id and isIDRegistered(id) and cb then
+		cb(getByID(id).onoff)
 	end
 end)
 

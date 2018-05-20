@@ -19,6 +19,8 @@ $(function() {
 			setModuleItemRightText(data.setRightText.id, data.setRightText.text);
 		else if (data.removeElements)
 			removeElementsByIDsProperly(data.removeElements.removables);
+		else if (data.setModuleItemDatastate)
+			setModuleItemDatastate(data.setModuleItemDatastate.id, data.setModuleItemDatastate.state);
     });
 });
 
@@ -156,6 +158,22 @@ function removeElementByID(id) {
 		items[id] = null;
 	if (menus[id] != null)
 		menus[id] = null;
+}
+
+function setModuleItemDatastate(id, state) {
+	var item = items[id];
+	if (item.datastate != null)
+		item.datastate == state;
+	
+	// Update if element is being displayed
+	if (content != null)
+		for (var i = 0; i < content.items[currentpage].length; i++)
+			if (content.items[currentpage][i].id == id) {
+				if (!state)
+					$(".menuoption").eq(i + itemcounteroffset).attr("data-state", "OFF");
+				else
+					$(".menuoption").eq(i + itemcounteroffset).attr("data-state", "ON");
+			}
 }
 
 function getEmptyItemSlotPage(menu) {
