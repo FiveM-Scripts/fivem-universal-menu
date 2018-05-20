@@ -116,7 +116,8 @@ function resetSelect() {
 function handleSelectedOption() {
     var item = content.items[currentpage][itemcounter];
     
-	if (getModuleElementExtraClass(item, "greyedout") == null) {
+	var greyedout = getModuleElementExtraClass(item, "greyedout");
+	if (greyedout == null || !greyedout.state) {
 		if (item.type == "menu") {
 			showMenu(menus[item.id]);
 			sendData(item.id, {});
