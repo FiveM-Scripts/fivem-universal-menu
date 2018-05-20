@@ -39,14 +39,18 @@ AddEventHandler("menu:isMenuShown", function(cb)
 end)
 
 AddEventHandler("menu:goBackMenu", function()
-	SendNUIMessage({
-		menuback = true,
-		nosound = true
-	})
+	if menuopen then
+		SendNUIMessage({
+			menuback = true,
+			nosound = true
+		})
+	end
 end)
 
 AddEventHandler("menu:goToMainMenu", function()
-	SendNUIMessage({
-		toMainMenu = true
-	})
+	if menuopen then
+		SendNUIMessage({
+			toMainMenu = true
+		})
+	end
 end)
