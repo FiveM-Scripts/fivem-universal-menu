@@ -128,7 +128,6 @@ function removeElementsByIDsProperly(ids) {
 }
 
 function removeElementByID(id) {
-	debug(id + " " + getModuleElementByID(id))
 	var parentElement = getModuleElementByID(getModuleElementByID(id).parent);
 	if (parentElement != null)
 		for (var i = 0; i < parentElement.items.length; i++)
