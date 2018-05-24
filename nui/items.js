@@ -163,7 +163,7 @@ function removeElementByID(id) {
 function setModuleItemDatastate(id, state) {
 	var item = items[id];
 	if (item.datastate != null)
-		item.datastate == state;
+		item.datastate = state;
 	
 	// Update if element is being displayed
 	if (content != null)
