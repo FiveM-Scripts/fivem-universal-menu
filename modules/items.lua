@@ -194,7 +194,7 @@ AddEventHandler("menu:getRightText", function(id, cb)
 	end
 end)
 
-AddEventHandler("menu:removeByID", function(id)
+AddEventHandler("menu:removeByID", function(id, retainParent)
 	if id and isIDRegistered(id) then
 		local removables = {}
 		for _, element in ipairs(moduleContent) do
@@ -209,7 +209,7 @@ AddEventHandler("menu:removeByID", function(id)
 		end
 		
 		SendNUIMessage({
-			removeElements = {removables = removables}
+			removeElements = {removables = removables, retainParent = retainParent}
 		})
 		
 		for i, removable in ipairs(removables) do
