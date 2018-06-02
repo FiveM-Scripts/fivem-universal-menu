@@ -18,7 +18,7 @@ $(function() {
 		else if (data.setRightText)
 			setModuleItemRightText(data.setRightText.id, data.setRightText.text);
 		else if (data.removeElements)
-			removeElementsByIDsProperly(data.removeElements.removables, data.removeElements.retainParent);
+			removeElementsByIDsProperly(data.removeElements.removables);
 		else if (data.setModuleItemDatastate)
 			setModuleItemDatastate(data.setModuleItemDatastate.id, data.setModuleItemDatastate.state);
     });
@@ -120,26 +120,27 @@ function setModuleItemRightText(id, text) {
 	}
 }
 
-function removeElementsByIDsProperly(ids, retainParent) {
-	var afterwardsMenu;
+function removeElementsByIDsProperly(ids) {
+	/*var afterwardsMenu;
 	
 	if (content != null)
 		for (var i = 0; i < content.items[currentpage].length; i++)
 			for (var j = 0; j < ids.length; j++)
 				if (content.items[currentpage][i].id == ids[j])
-					afterwardsMenu = content.items[currentpage][i].parent;
+					afterwardsMenu = content.items[currentpage][i].parent;*/
 				
 	for (var i = 0; i < ids.length; i++)
-		removeElementByID(ids[i], retainParent);
+		removeElementByID(ids[i]);
 	
-	if (afterwardsMenu != null)
+	/*if (afterwardsMenu != null)
 		if (menus[afterwardsMenu] == null)
 			showMenu(mainmenu);
 		else
-			showMenu(menus[afterwardsMenu]);
+			showMenu(menus[afterwardsMenu]);*/
+	showMenu[content.id]
 }
 
-function removeElementByID(id, retainParent) {
+function removeElementByID(id) {
 	var parentElement = menus[items[id].parent];
 	if (parentElement != null)
 		for (var i = 0; i < parentElement.items.length; i++)
@@ -149,8 +150,11 @@ function removeElementByID(id, retainParent) {
 					
 					if (j == 0) {
 						parentElement.items.splice(i, 1);
-						if (!retainParent && i == 0)
-							removeElementByID(parentElement.id, false);
+						if (i == 0) {
+							//removeElementByID(parentElement.id);
+							addModuleItem(parentElement, {name: "It's empty in here!", id: parentElement.id + "-empty", preset: true});
+							parentElement.hasContent = false;
+						}
 					}
 				}
 		
