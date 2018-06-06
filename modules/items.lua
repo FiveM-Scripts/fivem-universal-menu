@@ -129,8 +129,10 @@ AddEventHandler("menu:isIDRegistered", function(id, cb)
 end)
 
 AddEventHandler("menu:setDesc", function(id, text)
-	if id and isIDRegistered(id) and text then
-		local text = trimTextLength(text, config.items.maxdesclength)
+	if id and isIDRegistered(id) then
+		if text then
+			local text = trimTextLength(text, config.items.maxdesclength)
+		end
 		local element = getByID(id)
 		
 		if element.desc ~= text then
