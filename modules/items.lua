@@ -208,20 +208,23 @@ AddEventHandler("menu:removeByID", function(id)
 				end
 			end
 		end
-		if not getByID(id).isMenu then
-			table.insert(removables, id)
-		end
+		table.insert(removables, id)
 		
 		SendNUIMessage({
 			removeElements = {removables = removables}
 		})
-		
+
+		local isMenu = getByID(id).isMenu
 		for i, removable in ipairs(removables) do
-			for i=#moduleContent, 1, -1 do
+			for i = #moduleContent, 1, -1 do
 				if moduleContent[i].id == removable then
 					table.remove(moduleContent, i)
 				end
 			end
+		end
+
+		if isMenu then
+			TriggerEvent("menu:goBackMenu")
 		end
 	end
 end)
